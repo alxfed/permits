@@ -3,7 +3,7 @@ import scrapy
 
 
 class ListSpider(scrapy.Spider):
-    name = 'list'
+    name = 'inspections_list'
     start_urls = ['https://webapps1.chicago.gov/buildingrecords/home']
 
     # https://docs.scrapy.org/en/latest/topics/spiders.html?highlight=start_requests#spiders
