@@ -14,11 +14,19 @@ class ListSpider(scrapy.Spider):
             formid='agreement',
             formdata = {"agreement": "Y",
                         "submit": "submit"},
-            clickdata={'submit': "submit"},
             callback = self.after_agreement
         )
 
     def after_agreement(self, response):
+        return scrapy.FormRequest.from_response(
+            response,
+            formid='search',
+            formdata = {"fullAddress": "1940 N WHIPPLE ST",
+                        "submit": "submit"},
+            callback = self.after_search
+        )
+
+    def after_search(self, response):
         print('ok')
         pass
 
