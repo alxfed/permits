@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import csv
 
 
-class ListSpider(scrapy.Spider):
+def agreement_failed(response):
+    # TODO: check the response
+    pass
+
+
+def not_found(response):
+    # TODO: check if this is a 'not found' page
+    pass
+
+class InspectionsListSpider(scrapy.Spider):
     name = 'inspections_list'
     start_urls = ['https://webapps1.chicago.gov/buildingrecords/home']
 
@@ -18,17 +28,24 @@ class ListSpider(scrapy.Spider):
         )
 
     def after_agreement(self, response):
-        return scrapy.FormRequest.from_response(
-            response,
-            formid='search',
-            formdata = {"fullAddress": "1940 N WHIPPLE ST",
-                        "submit": "submit"},
-            callback = self.after_search
-        )
+        if agreement_failed(response):
+            self.logger.error("agreement failed!")
+            return
+        else:
+            item_list = pd.read_csv('itemlist.csv', dtype=object)
+        for item in item_list:
+            yield scrapy.FormRequest.from_response(
+                response,
+                formid='search',
+                formdata = {"fullAddress": item['Address'],
+                            "submit": "submit"},
+                callback = self.after_search
+                )
 
     def after_search(self, response):
         print('ok')
         pass
+
 
 """
 <form id="agreement" class="city-search-form" action="agreement" method="post">
