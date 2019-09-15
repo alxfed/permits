@@ -7,9 +7,10 @@ class RunFFTests():
 
     def testMethod(self):
         # Initiate the driver instance
-        driver = webdriver.Firefox(executable_path="./geckodriver")
-
-        driver.get("http://www.letskodeit.com")
+        # options = webdriver.ChromeOptions()
+        # options.add_argument('headless')# for Firefox it is '-headless')
+        driver = webdriver.Chrome(executable_path="./chromedriver") # , options=options)
+        driver.get("http://www.google.com")
 
 
 def main():
@@ -18,6 +19,7 @@ def main():
     """
     ff = RunFFTests()
     ff.testMethod()
+    print('ok')
     return
 
 
