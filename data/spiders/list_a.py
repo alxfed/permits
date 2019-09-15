@@ -25,8 +25,6 @@ class InspectionsListSpider(scrapy.Spider):
     # curs = conn.cursor()
 
 
-    # https://docs.scrapy.org/en/latest/topics/spiders.html?highlight=start_requests#spiders
-
     def parse(self, response):
         return scrapy.FormRequest.from_response(
             response,
