@@ -58,7 +58,7 @@ class InspectionsListSpider(scrapy.Spider):
             return
         for permit in self.permits_list:
             tup = (permit['street_n'], permit['street_dir'],
-                   permit['street_name'], permit['SUFFIX'])
+                   permit['street_name'], permit['suffix'])
             address = " ".join(tup)
             kwargs = {'permit_n': permit['permit_n'],
                       'full_address': address}
@@ -69,7 +69,7 @@ class InspectionsListSpider(scrapy.Spider):
                             "submit": "submit"},
                 callback = self.after_search, cb_kwargs=kwargs)
 
-    def after_search(self, response, kwargs):
+    def after_search(self, response, **kwargs):
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
         perm = kwargs['permit_n']
         address = kwargs['full_address']
