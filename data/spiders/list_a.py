@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import sqlite3
-from data.items import InspTableLine, InspTable
+from datetime import datetime
+from data.items import InspTableLine
+from collections import OrderedDict
 
 
 def agreement_failed(response):
@@ -51,7 +53,7 @@ class InspectionsListSpider(scrapy.Spider):
             yield scrapy.FormRequest.from_response(
                 response,
                 formid='search',
-                formdata = {"fullAddress": permit['Address'],
+                formdata = {"fullAddress": permit['Address'],  # 1940 N WHIPPLE ST
                             "submit": "submit"},
                 callback = self.after_search)
 
@@ -61,9 +63,14 @@ class InspectionsListSpider(scrapy.Spider):
             yield None
         else:
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
+            insp_list = OrderedDict()
             insp_table = response.xpath(INSP_ROWS_XPATH)
             for line in insp_table:
                 table_line = InspTableLine()
                 table_line['insp_n'] = line.xpath('td[1]/text()').get()
-
-                yield inspections_list
+                insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
+                table_line['status'] = line.xpath('td[3]/text()').get()
+                table_line['type_desc'] = line.xpath('td[4]/text()').get()
+                insp_list.update(table_line)
+            yield insp_list
