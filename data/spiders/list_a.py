@@ -28,10 +28,14 @@ def not_found(response):
 class InspectionsListSpider(scrapy.Spider):
     name = 'insp_list_a'
     start_urls = ['https://webapps1.chicago.gov/buildingrecords/home']
-    DB_PATH = '/media/alxfed/toca/dbase/fifthbase.sqlite'
+    DB_PATH = '/home/alxfed/dbase/fifthbase.sqlite'
     conn = sqlite3.connect(DB_PATH)  # , isolation_level=None) for working without commit
     conn.row_factory = sqlite3.Row
     curs = conn.cursor()
+    curs.execute('SELECT "PERMIT#", "STREET_NUMBER", "STREET DIRECTION", "STREET_NAME", "SUFFIX"  FROM permits')
+    permits_list = curs.fetchall()
+    conn.close()
+    print('ok')
 
     def parse(self, response):
         return scrapy.FormRequest.from_response(
@@ -46,10 +50,12 @@ class InspectionsListSpider(scrapy.Spider):
         if agreement_failed(response):
             self.logger.error("agreement failed!")
             return
-        else:
-            self.curs.execute("SELECT Address From permits")
-            permits_list = self.curs.fetchall()
-        for permit in permits_list:
+        for permit in self.permits_list:
+            tup = (permit['STREET_NEMBER'], permit['STREET DIRECTION'],
+                   permit['STREET_NAME'], permit['SUFFIX'])
+            address = " ".join(tup)
+            kwargs = {'pemit_n': permit['PERMIT#'],
+                      'full_address': address}
             yield scrapy.FormRequest.from_response(
                 response,
                 formid='search',
