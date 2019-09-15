@@ -9,8 +9,11 @@ from collections import OrderedDict
 def agreement_failed(response):
     NO_AGREEMENT_XPATH = '//*[@id="agreement.errors"]/text()'
     no_agreement = response.xpath(NO_AGREEMENT_XPATH).get()
-    if no_agreement.startswith('Please agree to the term of the site to confinue.'):
-        return True
+    if no_agreement:
+        if no_agreement.startswith('Please agree to the term of the site to confinue.'):
+            return True
+        else:
+            return True
     else:
         return False
 
@@ -19,8 +22,11 @@ def not_found(response):
     # //*[@id="search"]/div[2]/p
     NO_MATCH_XPATH = '//*[@id="search"]/div[2]/p/text()'
     no_address_found = response.xpath(NO_MATCH_XPATH).get()
-    if no_address_found.startswith('The address match was not found.'):
-        return True
+    if no_address_found:
+        if no_address_found.startswith('The address match was not found.'):
+            return True
+        else:
+            return True
     else:
         return False
 
@@ -41,7 +47,6 @@ class InspectionsListSpider(scrapy.Spider):
                              'street_name': row["STREET_NAME"],
                              'suffix': row["SUFFIX"]})
     conn.close()
-    print('ok')
 
     def parse(self, response):
         return scrapy.FormRequest.from_response(
@@ -65,7 +70,7 @@ class InspectionsListSpider(scrapy.Spider):
             yield scrapy.FormRequest.from_response(
                 response,
                 formid='search',
-                formdata = {"fullAddress": permit['Address'],  # 1940 N WHIPPLE ST
+                formdata = {"fullAddress": address,  # 1940 N WHIPPLE ST
                             "submit": "submit"},
                 callback = self.after_search, cb_kwargs=kwargs)
 
@@ -77,14 +82,18 @@ class InspectionsListSpider(scrapy.Spider):
             yield None
         else:
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
+            permits_table_line = dict()
+            permits_table_line.update({'permit_n': perm, 'full_address': address})
             insp_list = OrderedDict()
             insp_table = response.xpath(INSP_ROWS_XPATH)
-            for line in insp_table:
-                table_line = InspTableLine()
-                table_line['insp_n'] = line.xpath('td[1]/text()').get()
-                insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
-                table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
-                table_line['status'] = line.xpath('td[3]/text()').get()
-                table_line['type_desc'] = line.xpath('td[4]/text()').get()
-                insp_list.update(table_line)
-            yield insp_list
+            if insp_table:
+                for line in insp_table:
+                    table_line = InspTableLine()
+                    table_line['insp_n'] = line.xpath('td[1]/text()').get()
+                    insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                    table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
+                    table_line['status'] = line.xpath('td[3]/text()').get()
+                    table_line['type_desc'] = line.xpath('td[4]/text()').get()
+                    insp_list.update(table_line)
+                permits_table_line.update(insp_list)
+            yield permits_table_line
