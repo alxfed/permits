@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import sqlite3
+from data.items import InspTableLine, InspTable
 
 
 def agreement_failed(response):
@@ -55,11 +56,14 @@ class InspectionsListSpider(scrapy.Spider):
                 callback = self.after_search)
 
     def after_search(self, response):
+        INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
         if not_found(response):
             yield None
         else:
-            # TODO: process the result page
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
-            #//*[@id="resultstable_inspections"]/tbody/tr[1]/td[4]
-            inspections_list = []
-            yield inspections_list
+            insp_table = response.xpath(INSP_ROWS_XPATH)
+            for line in insp_table:
+                table_line = InspTableLine()
+                table_line['insp_n'] = line.xpath('td[1]/text()').get()
+
+                yield inspections_list
