@@ -13,10 +13,10 @@ def not_found(response):
     pass
 
 class InspectionsListSpider(scrapy.Spider):
-    name = 'inspections_list'
+    name = 'insp_list_b'
     start_url = 'https://webapps1.chicago.gov/buildingrecords/home'
-    conn = sqlite3.connect('/media/alxfed/toca/dbase/fifthbase.sqlite')  # , isolation_level=None) for working without commit
-    curs = conn.cursor()
+    # conn = sqlite3.connect('/media/alxfed/toca/dbase/fifthbase.sqlite')  # , isolation_level=None) for working without commit
+    # curs = conn.cursor()
 
     def start_requests(self):
         response = scrapy.Request(self.start_url)
