@@ -99,6 +99,7 @@ venv.bak/
 
 # webdrivers
 geckodriver
+chromedriver
 
 # mkdocs documentation
 /site
