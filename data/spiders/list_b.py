@@ -13,11 +13,15 @@ def not_found(response):
     pass
 
 class InspectionsListSpider(scrapy.Spider):
-    name = 'insp_list_a'
-    start_urls = ['https://webapps1.chicago.gov/buildingrecords/home']
-    # DB_PATH = '/media/alxfed/toca/dbase/fifthbase.sqlite'
-    # conn = sqlite3.connect(DB_PATH)  # , isolation_level=None) for working without commit
-    # curs = conn.cursor()
+    name = 'inspections_list'
+    start_url = 'https://webapps1.chicago.gov/buildingrecords/home'
+    conn = sqlite3.connect('/media/alxfed/toca/dbase/fifthbase.sqlite')  # , isolation_level=None) for working without commit
+    curs = conn.cursor()
+
+    def start_requests(self):
+        response = scrapy.Request(self.start_url)
+        print('ok')
+        return next()
 
 
     # https://docs.scrapy.org/en/latest/topics/spiders.html?highlight=start_requests#spiders
@@ -36,7 +40,7 @@ class InspectionsListSpider(scrapy.Spider):
             self.logger.error("agreement failed!")
             return
         else:
-            item_list = 1, 2 # pd.read_csv('itemlist.csv', dtype=object)
+            item_list = 1, 2 # item_list = pd.read_csv('itemlist.csv', dtype=object)
         for item in item_list:
             yield scrapy.FormRequest.from_response(
                 response,
