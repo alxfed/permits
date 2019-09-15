@@ -4,8 +4,13 @@ import sqlite3
 
 
 def agreement_failed(response):
-    # TODO: check the response
-    pass
+    # //*[@id="agreement.errors"]
+    NO_AGREEMENT_XPATH = '//*[@id="agreement.errors"]/text()'
+    no_agreement = response.xpath(NO_AGREEMENT_XPATH).get()
+    if no_agreement.startswith('Please agree to the term of the site to confinue.'):
+        return True
+    else:
+        return False
 
 
 def not_found(response):
