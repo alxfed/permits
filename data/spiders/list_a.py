@@ -13,7 +13,6 @@ def agreement_failed(response):
 
 
 def not_found(response):
-    # TODO: check if this is a 'not found' page
     # //*[@id="search"]/div[2]/p
     NO_MATCH_XPATH = '//*[@id="search"]/div[2]/p/text()'
     no_address_found = response.xpath(NO_MATCH_XPATH).get()
@@ -21,6 +20,7 @@ def not_found(response):
         return True
     else:
         return False
+
 
 class InspectionsListSpider(scrapy.Spider):
     name = 'insp_list_a'
@@ -59,5 +59,7 @@ class InspectionsListSpider(scrapy.Spider):
             yield None
         else:
             # TODO: process the result page
+            # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
+            #//*[@id="resultstable_inspections"]/tbody/tr[1]/td[4]
             inspections_list = []
             yield inspections_list
