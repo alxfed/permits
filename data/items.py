@@ -15,6 +15,8 @@ class DataItem(scrapy.Item):
 
 
 class InspTableLine(scrapy.Item):
+    permit_n    = scrapy.Field()
+    address     = scrapy.Field()
     insp_n      = scrapy.Field()
     insp_date   = scrapy.Field()
     status      = scrapy.Field()

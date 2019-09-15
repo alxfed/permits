@@ -33,7 +33,13 @@ class InspectionsListSpider(scrapy.Spider):
     conn.row_factory = sqlite3.Row
     curs = conn.cursor()
     curs.execute('SELECT "PERMIT#", "STREET_NUMBER", "STREET DIRECTION", "STREET_NAME", "SUFFIX"  FROM permits')
-    permits_list = curs.fetchall()
+    permits_list = []
+    for row in curs.fetchall():
+        permits_list.append({'permit_n': row['PERMIT#'],
+                             'street_n': row["STREET_NUMBER"],
+                             'street_dir': row["STREET DIRECTION"],
+                             'street_name': row["STREET_NAME"],
+                             'suffix': row["SUFFIX"]})
     conn.close()
     print('ok')
 
@@ -51,20 +57,22 @@ class InspectionsListSpider(scrapy.Spider):
             self.logger.error("agreement failed!")
             return
         for permit in self.permits_list:
-            tup = (permit['STREET_NEMBER'], permit['STREET DIRECTION'],
-                   permit['STREET_NAME'], permit['SUFFIX'])
+            tup = (permit['street_n'], permit['street_dir'],
+                   permit['street_name'], permit['SUFFIX'])
             address = " ".join(tup)
-            kwargs = {'pemit_n': permit['PERMIT#'],
+            kwargs = {'permit_n': permit['permit_n'],
                       'full_address': address}
             yield scrapy.FormRequest.from_response(
                 response,
                 formid='search',
                 formdata = {"fullAddress": permit['Address'],  # 1940 N WHIPPLE ST
                             "submit": "submit"},
-                callback = self.after_search)
+                callback = self.after_search, cb_kwargs=kwargs)
 
-    def after_search(self, response):
+    def after_search(self, response, kwargs):
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
+        perm = kwargs['permit_n']
+        address = kwargs['full_address']
         if not_found(response):
             yield None
         else:
