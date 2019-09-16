@@ -79,9 +79,9 @@ class DataDownloaderMiddleware(object):
     def process_request(self, request, spider):
         verify_url = 'https://webapps1.chicago.gov/buildingrecords/verifyaddress'
         search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
-        aggreed_url='https://webapps1.chicago.gov/buildingrecords/agreement'
+        # aggreed_url='https://webapps1.chicago.gov/buildingrecords/agreement'
         # home_url = 'https://webapps1.chicago.gov/buildingrecords/home'
-        urls = aggreed_url, search_url, verify_url
+        urls = search_url, verify_url
         # Called for each request that goes through the downloader
         # middleware.
 
