@@ -13,7 +13,7 @@ options = webdriver.ChromeOptions()
 options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
 
 
 class DataSpiderMiddleware(object):
@@ -79,6 +79,9 @@ class DataDownloaderMiddleware(object):
     def process_request(self, request, spider):
         verify_url = 'https://webapps1.chicago.gov/buildingrecords/verifyaddress'
         search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
+        aggreed_url='https://webapps1.chicago.gov/buildingrecords/agreement'
+        # home_url = 'https://webapps1.chicago.gov/buildingrecords/home'
+        urls = aggreed_url, search_url, verify_url
         # Called for each request that goes through the downloader
         # middleware.
 
@@ -88,7 +91,7 @@ class DataDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        if request.url == verify_url or request.url == search_url:
+        if request.url in urls:
             driver.get(request.url)
             body = driver.page_source
             return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
