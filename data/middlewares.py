@@ -8,13 +8,13 @@
 from scrapy import signals
 from scrapy.http import HtmlResponse
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
-
-driver = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
-
+options.binary_location = '/usr/bin/google-chrome'
+browser = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
 
 class DataSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -77,24 +77,28 @@ class DataDownloaderMiddleware(object):
         return s
 
     def process_request(self, request, spider):
-        verify_url = 'https://webapps1.chicago.gov/buildingrecords/verifyaddress'
-        search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
-        # aggreed_url='https://webapps1.chicago.gov/buildingrecords/agreement'
-        # home_url = 'https://webapps1.chicago.gov/buildingrecords/home'
-        urls = search_url, verify_url
+        home_url = 'https://webapps1.chicago.gov/buildingrecords'
         # Called for each request that goes through the downloader
         # middleware.
-
         # Must either:
         # - return None: continue processing this request
         # - or return a Response object
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        if request.url in urls:
-            driver.get(request.url)
-            body = driver.page_source
-            return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
+        if request.url.startswith(home_url):
+            address = request.meta['address']
+            browser.get('https://webapps1.chicago.gov/buildingrecords/home')
+            radio1 = browser.find_element_by_xpath("//input[@id='rbnAgreement1']")
+            radio1.click()
+            submit_button = browser.find_element_by_xpath("//button[@id='submit']")
+            submit_button.click()
+            assert "Building Permit and Inspection Records" in browser.title
+            text_box = browser.find_element_by_id('fullAddress')
+            text_box.send_keys(address + Keys.RETURN)
+            assert 'Building Permit and Inspection Records' in browser.title
+            body = browser.page_source
+            return HtmlResponse(browser.current_url, body=body, encoding='utf-8', request=request)
         else:
             return None
 

@@ -49,15 +49,6 @@ class InspectionsListSpider(scrapy.Spider):
     conn.close()
 
     def parse(self, response):
-        return scrapy.FormRequest.from_response(
-            response,
-            formid='agreement',
-            formdata = {"agreement": "Y",
-                        "submit": "submit"},
-            callback = self.after_agreement
-        )
-
-    def after_agreement(self, response):
         if agreement_failed(response):
             self.logger.error("agreement failed!")
             return

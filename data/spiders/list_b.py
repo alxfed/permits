@@ -14,19 +14,29 @@ def not_found(response):
 
 class InspectionsListSpider(scrapy.Spider):
     name = 'insp_list_b'
-    start_url = 'https://webapps1.chicago.gov/buildingrecords/home'
-    # conn = sqlite3.connect('/media/alxfed/toca/dbase/fifthbase.sqlite')  # , isolation_level=None) for working without commit
-    # curs = conn.cursor()
 
     def start_requests(self):
-        response = scrapy.Request(self.start_url)
-        print('ok')
-        return next()
-
+        DB_PATH = '/home/alxfed/dbase/fifthbase.sqlite'
+        conn = sqlite3.connect(DB_PATH)  # , isolation_level=None) for working without commit
+        conn.row_factory = sqlite3.Row
+        curs = conn.cursor()
+        curs.execute('SELECT "PERMIT#", "STREET_NUMBER", "STREET DIRECTION", "STREET_NAME", "SUFFIX"  FROM permits')
+        permits_list = []
+        for row in curs.fetchall():
+            permits_list.append({'permit_n': row['PERMIT#'],
+                                 'street_n': row["STREET_NUMBER"],
+                                 'street_dir': row["STREET DIRECTION"],
+                                 'street_name': row["STREET_NAME"],
+                                 'suffix': row["SUFFIX"]})
+        conn.close()
+        return [scrapy.Request('https://webapps1.chicago.gov/buildingrecords',
+                               dont_filter=True, callback=self.parse,
+                               meta={'permits_list': permits_list})]
 
     # https://docs.scrapy.org/en/latest/topics/spiders.html?highlight=start_requests#spiders
 
     def parse(self, response):
+        permits_list = response.meta['permits_list']
         return scrapy.FormRequest.from_response(
             response,
             formid='agreement',
