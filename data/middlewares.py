@@ -6,6 +6,14 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.http import HtmlResponse
+from selenium import webdriver
+
+options = webdriver.ChromeOptions()
+options.add_argument('headless')
+options.add_argument('window-size=1920x1080')
+
+driver = webdriver.Chrome(chrome_options=options)
 
 
 class DataSpiderMiddleware(object):
@@ -69,6 +77,8 @@ class DataDownloaderMiddleware(object):
         return s
 
     def process_request(self, request, spider):
+        verify_url = 'https://webapps1.chicago.gov/buildingrecords/verifyaddress'
+        search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
         # Called for each request that goes through the downloader
         # middleware.
 
@@ -78,7 +88,12 @@ class DataDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        if request.url == verify_url or request.url == search_url:
+            driver.get(request.url)
+            body = driver.page_source
+            return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
+        else:
+            return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
