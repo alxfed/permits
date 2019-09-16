@@ -13,7 +13,7 @@ options = webdriver.ChromeOptions()
 options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome(executable_path='~/alxfed/permits/chromedriver', chrome_options=options)
 
 
 class DataSpiderMiddleware(object):
