@@ -84,36 +84,53 @@ class InspListCSpider(CSVFeedSpider):
                                  cb_kwargs=the_kwargs)
 
     def parse_table(self, response, **kwargs):
+        PERM_ROWS_XPATH = '//*[@id="resultstable_permits"]/tbody/tr'
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
-        permit = kwargs['permit_n']
-        address = kwargs['full_address']
+        permits_table_line = OrderedDict()
+        permits_table_line.update({'permit_n': kwargs['permit_n'],
+                                   'full_address': kwargs['full_address'],
+                                   'input_address': kwargs['full_address'],
+                                   'range_address': ''})
+        perm_list = OrderedDict()
+        insp_list = OrderedDict()
         if response.url == self.INSPECTIONS_URL:
-            # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
-            permits_table_line = dict()
-            permits_table_line.update({'permit_n': permit, 'full_address': address})
-            insp_list = OrderedDict()
+            input_address = response.xpath('/html/body/div/div[4]/div[3]/p/text()').get()
+            range_address = response.xpath('/html/body/div/div[4]/div[4]/p/text()').get()
+            permits_table_line.update({'input_address': input_address,
+                                       'range_address': range_address})
+            perm_table_selector = response.xpath(PERM_ROWS_XPATH)
+            # columns: PERMIT #, DATE ISSUED, DESCRIPTION OF WORK
+            if perm_table_selector:
+                for perm_line in perm_table_selector:
+                    perm_table_line = dict()
+                    # //*[@id="resultstable_permits"]/tbody/tr[1]/td[1]
+                    perm_table_line['perm_n'] = perm_line.xpath('td[1]/text()').get()
+                    perm_date = datetime.strptime(perm_line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                    perm_table_line['perm_date'] = perm_date.strftime('%Y-%m-%d')
+                    perm_table_line['work_desc'] = perm_line.xpath('td[3]/text()').get()
+                    perm_list.update(perm_table_line)
+            else:
+                perm_list.update(dict())
+            permits_table_line.update({'perm_table': perm_list})
             insp_table = response.xpath(INSP_ROWS_XPATH)
+            # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
             if insp_table:
-                for line in insp_table:
-                    table_line = InspTableLine()
+                for insp_line in insp_table:
+                    insp_table_line = InspTableLine()
                     # //*[@id="resultstable_inspections"]/tbody/tr[1]/td[1]/a
-                    table_line['insp_n'] = line.xpath('td[1]/a/text()').get()
-                    insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
-                    table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
-                    #table_line['insp_date'] = line.xpath('td[2]/text()').get()
-                    table_line['status'] = line.xpath('td[3]/text()').get()
-                    table_line['type_desc'] = line.xpath('td[4]/text()').get()
-                    insp_list.update(table_line)
+                    insp_table_line['insp_n'] = insp_line.xpath('td[1]/a/text()').get()
+                    insp_date = datetime.strptime(insp_line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                    insp_table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
+                    # insp_table_line['insp_date'] = insp_line.xpath('td[2]/text()').get()
+                    insp_table_line['status'] = insp_line.xpath('td[3]/text()').get()
+                    insp_table_line['type_desc'] = insp_line.xpath('td[4]/text()').get()
+                    insp_list.update(insp_table_line)
             else:
                 insp_list.update(dict())
-            permits_table_line.update(insp_list)
+            permits_table_line.update({'insp_table': insp_list})
             yield permits_table_line
         elif response.url == self.VALIDATE_URL:
             if not_found(response):
-                permits_table_line = dict()
-                permits_table_line.update({'permit_n': permit, 'full_address': address})
-                insp_list = OrderedDict(dict())
-                permits_table_line.update(insp_list)
                 yield permits_table_line
             else:
                 yield None
