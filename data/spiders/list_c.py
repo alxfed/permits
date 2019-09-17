@@ -87,11 +87,6 @@ class InspListCSpider(CSVFeedSpider):
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
         permit = kwargs['permit_n']
         address = kwargs['full_address']
-        # minify html
-        response = response.replace(body=re.sub('>\s*<', '><',
-                                                response.body.replace('\n', ''),
-                                                0, re.M))
-        # minify html
         if response.url == self.INSPECTIONS_URL:
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
             permits_table_line = dict()

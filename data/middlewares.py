@@ -11,6 +11,7 @@ from scrapy.http import HtmlResponse
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
+import re
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
@@ -102,7 +103,12 @@ class DataDownloaderMiddleware(object):
             text_box.send_keys(address + Keys.RETURN)
             sleep(1)
             where_i_am = browser.current_url
-            body = str(browser.page_source)
+            body = browser.page_source
+            # minify html
+            body = re.sub('>\s*<', '><',
+                          response.body.replace('\n', ''),
+                          0, re.M)
+            # minify html
             if where_i_am == search_url:
                 pass
             elif where_i_am == not_found_url:
