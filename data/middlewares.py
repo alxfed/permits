@@ -106,10 +106,13 @@ class DataDownloaderMiddleware(object):
                 body = browser.page_source
                 return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
             elif where_am_i == not_found_url:
-                # TODO: return some Html response when the address returns no result
-                pass
+                self.logger.info(f'No search result for address: {address}!')
+                body = browser.page_source
+                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
             else:
-                self.logger.info('No search result, but no validation too!')
+                self.logger.info('No search result, but no validation too! Something is wrong...')
+                body = browser.page_source
+                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
         else:
             return None
 

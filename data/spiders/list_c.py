@@ -56,7 +56,7 @@ class InspListCSpider(CSVFeedSpider):
         if row[header_start].startswith(header_start):
             yield None
         else:
-            tup = (row['PERMIT#'], row['STREET DIRECTION'],
+            tup = (row['STREET_NUMBER'], row['STREET DIRECTION'],
                    row['STREET_NAME'], row['SUFFIX'])
             address = " ".join(tup)
             the_kwargs = {'permit_n': row['PERMIT#'],
