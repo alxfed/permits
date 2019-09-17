@@ -74,6 +74,6 @@ class InspListCSpider(CSVFeedSpider):
         elif response.url == self.VALIDATE_URL:
             pass
         else:
-            self.logger('Something returned, but I dont know what')
+            self.logger('Something returned, but I dont know what it is')
         pass
 
