@@ -96,7 +96,8 @@ class InspListCSpider(CSVFeedSpider):
             if insp_table:
                 for line in insp_table:
                     table_line = InspTableLine()
-                    table_line['insp_n'] = line.xpath('td[1]/text()').get()
+                    # //*[@id="resultstable_inspections"]/tbody/tr[1]/td[1]/a
+                    table_line['insp_n'] = line.xpath('td[1]/a/text()').get()
                     insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
                     table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
                     #table_line['insp_date'] = line.xpath('td[2]/text()').get()
