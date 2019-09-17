@@ -2,6 +2,8 @@
 from scrapy.spiders import CSVFeedSpider
 from collections import OrderedDict
 import scrapy
+from data.items import InspTableLine
+from datetime import datetime
 
 
 class InspListCSpider(CSVFeedSpider):
@@ -68,12 +70,26 @@ class InspListCSpider(CSVFeedSpider):
                                  cb_kwargs=the_kwargs)
 
     def parse_table(self, response, **kwargs):
-        params = kwargs
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
-        perm = kwargs['permit_n']
+        permit = kwargs['permit_n']
         address = kwargs['full_address']
         if response.url == self.INSPECTIONS_URL:
-            pass
+            # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
+            permits_table_line = dict()
+            permits_table_line.update({'permit_n': permit, 'full_address': address})
+            insp_list = OrderedDict()
+            insp_table = response.xpath(INSP_ROWS_XPATH)
+            if insp_table:
+                for line in insp_table:
+                    table_line = InspTableLine()
+                    table_line['insp_n'] = line.xpath('td[1]/text()').get()
+                    insp_date = datetime.strptime(line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                    table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
+                    table_line['status'] = line.xpath('td[3]/text()').get()
+                    table_line['type_desc'] = line.xpath('td[4]/text()').get()
+                    insp_list.update(table_line)
+                permits_table_line.update(insp_list)
+            yield permits_table_line
         elif response.url == self.VALIDATE_URL:
             pass
         else:
