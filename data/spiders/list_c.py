@@ -69,6 +69,9 @@ class InspListCSpider(CSVFeedSpider):
 
     def parse_table(self, response, **kwargs):
         params = kwargs
+        INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
+        perm = kwargs['permit_n']
+        address = kwargs['full_address']
         if response.url == self.INSPECTIONS_URL:
             pass
         elif response.url == self.VALIDATE_URL:
