@@ -4,6 +4,7 @@ from collections import OrderedDict
 import scrapy
 from data.items import InspTableLine
 from datetime import datetime
+import re
 
 
 def not_found(response):
@@ -22,7 +23,7 @@ def not_found(response):
 class InspListCSpider(CSVFeedSpider):
     name = 'insp_list_c'
     allowed_domains = ['webapps1.chicago.gov']
-    start_urls = ['file:///home/alxfed/dbase/test_new_construction.csv']
+    start_urls = ['file:///home/alxfed/dbase/one_test_new_construction.csv']
     headers = ['ID', 'PERMIT#', 'PERMIT_TYPE', 'REVIEW_TYPE', 'APPLICATION_START_DATE',
                'ISSUE_DATE', 'PROCESSING_TIME', 'STREET_NUMBER', 'STREET DIRECTION',
                'STREET_NAME', 'SUFFIX', 'WORK_DESCRIPTION', 'BUILDING_FEE_PAID',
@@ -86,6 +87,11 @@ class InspListCSpider(CSVFeedSpider):
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
         permit = kwargs['permit_n']
         address = kwargs['full_address']
+        # minify html
+        response = response.replace(body=re.sub('>\s*<', '><',
+                                                response.body,
+                                                0, re.M))
+        # minify html
         if response.url == self.INSPECTIONS_URL:
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
             permits_table_line = dict()
