@@ -89,7 +89,7 @@ class InspListCSpider(CSVFeedSpider):
         address = kwargs['full_address']
         # minify html
         response = response.replace(body=re.sub('>\s*<', '><',
-                                                response.body,
+                                                response.body.replace('\n', ''),
                                                 0, re.M))
         # minify html
         if response.url == self.INSPECTIONS_URL:
