@@ -101,18 +101,18 @@ class DataDownloaderMiddleware(object):
             text_box = browser.find_element_by_id('fullAddress')
             text_box.send_keys(address + Keys.RETURN)
             sleep(1)
-            where_am_i = browser.current_url
-            if where_am_i == search_url:
+            where_i_am = browser.current_url
+            if where_i_am == search_url:
                 body = browser.page_source
-                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
-            elif where_am_i == not_found_url:
+                return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
+            elif where_i_am == not_found_url:
                 self.logger.info(f'No search result for address: {address}!')
                 body = browser.page_source
-                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
+                return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
             else:
                 self.logger.info('No search result, but no validation too! Something is wrong...')
                 body = browser.page_source
-                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
+                return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
         else:
             return None
 

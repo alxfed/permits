@@ -46,6 +46,7 @@ class InspListCSpider(CSVFeedSpider):
                'LOCATION', 'Boundaries - ZIP Codes', 'Community Areas',
                'Zip Codes', 'Census Tracts', 'Wards', ':@computed_region_awaf_s7ux']
     INSPECTIONS_URL = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
+    VALIDATE_URL = 'https://webapps1.chicago.gov/buildingrecords/validateaddress'
 
     # Do any adaptations you need here
     #def adapt_response(self, response):
@@ -68,4 +69,11 @@ class InspListCSpider(CSVFeedSpider):
 
     def parse_table(self, response, **kwargs):
         params = kwargs
+        if response.url == self.INSPECTIONS_URL:
+            pass
+        elif response.url == self.VALIDATE_URL:
+            pass
+        else:
+            self.logger('Something returned, but I dont know what')
+        pass
 
