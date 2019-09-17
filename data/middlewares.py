@@ -105,9 +105,9 @@ class DataDownloaderMiddleware(object):
             where_i_am = browser.current_url
             body = browser.page_source
             # minify html
-            body = re.sub('>\s*<', '><',
-                          response.body.replace('\n', ''),
-                          0, re.M)
+            body = body.replace('\t', '')
+            body = body.replace('\n', '')
+            body = re.sub('>\s*<', '><',body, 0, re.M)
             # minify html
             if where_i_am == search_url:
                 pass
