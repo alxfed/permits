@@ -45,6 +45,7 @@ class InspListCSpider(CSVFeedSpider):
                'XCOORDINATE', 'YCOORDINATE', 'LATITUDE', 'LONGITUDE',
                'LOCATION', 'Boundaries - ZIP Codes', 'Community Areas',
                'Zip Codes', 'Census Tracts', 'Wards', ':@computed_region_awaf_s7ux']
+    INSPECTIONS_URL = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
 
     # Do any adaptations you need here
     #def adapt_response(self, response):
@@ -55,4 +56,16 @@ class InspListCSpider(CSVFeedSpider):
         if row[header_start].startswith(header_start):
             yield None
         else:
-            yield scrapy.Request('https://webapps1.chicago.gov/buildingrecords/home')
+            tup = (row['PERMIT#'], row['STREET DIRECTION'],
+                   row['STREET_NAME'], row['SUFFIX'])
+            address = " ".join(tup)
+            the_kwargs = {'permit_n': row['PERMIT#'],
+                          'full_address': address}
+            yield scrapy.Request(url=self.INSPECTIONS_URL,
+                                 dont_filter=True,
+                                 callback=self.parse_table,
+                                 cb_kwargs=the_kwargs)
+
+    def parse_table(self, response, **kwargs):
+        params = kwargs
+

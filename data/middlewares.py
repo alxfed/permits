@@ -5,10 +5,12 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import scrapy
 from scrapy import signals
 from scrapy.http import HtmlResponse
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from time import sleep
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
@@ -78,6 +80,8 @@ class DataDownloaderMiddleware(object):
 
     def process_request(self, request, spider):
         home_url = 'https://webapps1.chicago.gov/buildingrecords'
+        search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
+        not_found_url = 'https://webapps1.chicago.gov/buildingrecords/validateaddress'
         # Called for each request that goes through the downloader
         # middleware.
         # Must either:
@@ -87,7 +91,7 @@ class DataDownloaderMiddleware(object):
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
         if request.url.startswith(home_url):
-            address = request.meta['address']
+            address = request.cb_kwargs['full_address']
             browser.get('https://webapps1.chicago.gov/buildingrecords/home')
             radio1 = browser.find_element_by_xpath("//input[@id='rbnAgreement1']")
             radio1.click()
@@ -96,9 +100,16 @@ class DataDownloaderMiddleware(object):
             assert "Building Permit and Inspection Records" in browser.title
             text_box = browser.find_element_by_id('fullAddress')
             text_box.send_keys(address + Keys.RETURN)
-            assert 'Building Permit and Inspection Records' in browser.title
-            body = browser.page_source
-            return HtmlResponse(browser.current_url, body=body, encoding='utf-8', request=request)
+            sleep(1)
+            where_am_i = browser.current_url
+            if where_am_i == search_url:
+                body = browser.page_source
+                return HtmlResponse(where_am_i, body=body, encoding='utf-8', request=request)
+            elif where_am_i == not_found_url:
+                # TODO: return some Html response when the address returns no result
+                pass
+            else:
+                self.logger.info('No search result, but no validation too!')
         else:
             return None
 
