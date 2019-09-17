@@ -87,8 +87,7 @@ class InspListCSpider(CSVFeedSpider):
         PERM_ROWS_XPATH = '//*[@id="resultstable_permits"]/tbody/tr'
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
         permits_table_line = OrderedDict()
-        permits_table_line.update({'permit_n': kwargs['permit_n'],
-                                   'full_address': kwargs['full_address'],
+        permits_table_line.update({'full_address': kwargs['full_address'],
                                    'input_address': kwargs['full_address'],
                                    'range_address': ''})
         perm_list = []
