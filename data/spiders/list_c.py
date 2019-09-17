@@ -6,6 +6,19 @@ from data.items import InspTableLine
 from datetime import datetime
 
 
+def not_found(response):
+    # //*[@id="search"]/div[2]/p
+    NO_MATCH_XPATH = '//*[@id="search"]/div[2]/p/text()'
+    no_address_found = response.xpath(NO_MATCH_XPATH).get()
+    if no_address_found:
+        if no_address_found.startswith('The address match was not found.'):
+            return True
+        else:
+            return True
+    else:
+        return False
+
+
 class InspListCSpider(CSVFeedSpider):
     name = 'insp_list_c'
     allowed_domains = ['webapps1.chicago.gov']
@@ -88,11 +101,20 @@ class InspListCSpider(CSVFeedSpider):
                     table_line['status'] = line.xpath('td[3]/text()').get()
                     table_line['type_desc'] = line.xpath('td[4]/text()').get()
                     insp_list.update(table_line)
-                permits_table_line.update(insp_list)
+            else:
+                insp_list.update(dict())
+            permits_table_line.update(insp_list)
             yield permits_table_line
         elif response.url == self.VALIDATE_URL:
-            pass
+            if not_found(response):
+                permits_table_line = dict()
+                permits_table_line.update({'permit_n': permit, 'full_address': address})
+                insp_list = OrderedDict(dict())
+                permits_table_line.update(insp_list)
+                yield permits_table_line
+            else:
+                yield None
         else:
             self.logger('Something returned, but I dont know what it is')
-        pass
+            yield None
 
