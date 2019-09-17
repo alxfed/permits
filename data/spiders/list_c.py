@@ -2,7 +2,7 @@
 from scrapy.spiders import CSVFeedSpider
 from collections import OrderedDict
 import scrapy
-from data.items import InspTableLine
+from data.items import InspTableLine, PermTableLine
 from datetime import datetime
 import re
 
@@ -91,8 +91,8 @@ class InspListCSpider(CSVFeedSpider):
                                    'full_address': kwargs['full_address'],
                                    'input_address': kwargs['full_address'],
                                    'range_address': ''})
-        perm_list = OrderedDict()
-        insp_list = OrderedDict()
+        perm_list = []
+        insp_list = []
         if response.url == self.INSPECTIONS_URL:
             input_address = response.xpath('/html/body/div/div[4]/div[3]/p/text()').get()
             range_address = response.xpath('/html/body/div/div[4]/div[4]/p/text()').get()
@@ -102,15 +102,15 @@ class InspListCSpider(CSVFeedSpider):
             # columns: PERMIT #, DATE ISSUED, DESCRIPTION OF WORK
             if perm_table_selector:
                 for perm_line in perm_table_selector:
-                    perm_table_line = dict()
+                    perm_table_line = PermTableLine()
                     # //*[@id="resultstable_permits"]/tbody/tr[1]/td[1]
-                    perm_table_line['perm_n'] = perm_line.xpath('td[1]/text()').get()
+                    perm_table_line['permit_n'] = perm_line.xpath('td[1]/text()').get()
                     perm_date = datetime.strptime(perm_line.xpath('td[2]/text()').get(), '%m/%d/%Y')
                     perm_table_line['perm_date'] = perm_date.strftime('%Y-%m-%d')
                     perm_table_line['work_desc'] = perm_line.xpath('td[3]/text()').get()
-                    perm_list.update(perm_table_line)
+                    perm_list.append(perm_table_line)
             else:
-                perm_list.update(dict())
+                perm_list.append(dict())
             permits_table_line.update({'perm_table': perm_list})
             insp_table = response.xpath(INSP_ROWS_XPATH)
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
@@ -124,9 +124,9 @@ class InspListCSpider(CSVFeedSpider):
                     # insp_table_line['insp_date'] = insp_line.xpath('td[2]/text()').get()
                     insp_table_line['status'] = insp_line.xpath('td[3]/text()').get()
                     insp_table_line['type_desc'] = insp_line.xpath('td[4]/text()').get()
-                    insp_list.update(insp_table_line)
+                    insp_list.append(insp_table_line)
             else:
-                insp_list.update(dict())
+                insp_list.append(dict())
             permits_table_line.update({'insp_table': insp_list})
             yield permits_table_line
         elif response.url == self.VALIDATE_URL:

@@ -14,14 +14,14 @@ class DataItem(scrapy.Item):
     pass
 
 
+class PermTableLine(scrapy.Item):
+    permit_n = scrapy.Field()
+    perm_date = scrapy.Field()
+    work_desc = scrapy.Field()
+
+
 class InspTableLine(scrapy.Item):
-    permit_n    = scrapy.Field()
-    address     = scrapy.Field()
     insp_n      = scrapy.Field()
     insp_date   = scrapy.Field()
     status      = scrapy.Field()
     type_desc   = scrapy.Field()
-
-
-class InspTable(scrapy.Item):
-    pass
