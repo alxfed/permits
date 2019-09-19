@@ -109,12 +109,14 @@ class DataDownloaderMiddleware(object):
             body = body.replace('\n', '')
             body = re.sub('>\s*<', '><',body, 0, re.M)
             # minify html
+            '''
             if where_i_am == search_url:
                 pass
             elif where_i_am == not_found_url:
                 self.logger.info(f'No search result for address: {address}!')
             else:
                 self.logger.info('No search result, but no validation too! Something is wrong...')
+            '''
             return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
         else:
             return None

@@ -37,7 +37,7 @@ def not_found(response):
 class InspListCSpider(CSVFeedSpider):
     name = 'buildings'
     allowed_domains = ['webapps1.chicago.gov']
-    start_urls = ['file:///home/alxfed/dbase/another_test_new_construction.csv']
+    start_urls = ['file:///home/alxfed/dbase/yet_another_test_new_construction.csv']
     headers = ['ID', 'PERMIT#', 'PERMIT_TYPE', 'REVIEW_TYPE', 'APPLICATION_START_DATE',
                'ISSUE_DATE', 'PROCESSING_TIME', 'STREET_NUMBER', 'STREET DIRECTION',
                'STREET_NAME', 'SUFFIX', 'WORK_DESCRIPTION', 'BUILDING_FEE_PAID',
@@ -100,19 +100,19 @@ class InspListCSpider(CSVFeedSpider):
     def parse_table(self, response, **kwargs):
         PERM_ROWS_XPATH = '//*[@id="resultstable_permits"]/tbody/tr'
         INSP_ROWS_XPATH = '//*[@id="resultstable_inspections"]/tbody/tr'
-        permits_table_line = OrderedDict()
-        permits_table_line.update({'full_address': kwargs['full_address'],
-                                   'input_address': kwargs['full_address'],
-                                   'range_address': ''})
+        table_line = OrderedDict()
         perm_list = []
         insp_list = []
-        if response.url == self.INSPECTIONS_URL:
-            if not_found(response):
-                yield None
+        table_line.update({'full_address': kwargs['full_address'],
+                           'input_address': kwargs['full_address'],
+                           'range_address': '',
+                           'perm_table': '',
+                           'insp_table': ''})
+        if response.url == self.INSPECTIONS_URL and not not_found(response):
             input_address = response.xpath('/html/body/div/div[4]/div[3]/p/text()').get()
             range_address = response.xpath('/html/body/div/div[4]/div[4]/p/text()').get()
-            permits_table_line.update({'input_address': input_address,
-                                       'range_address': range_address})
+            table_line.update({'input_address': input_address,
+                               'range_address': range_address})
             perm_table_selector = response.xpath(PERM_ROWS_XPATH)
             # columns: PERMIT #, DATE ISSUED, DESCRIPTION OF WORK
             if perm_table_selector:
@@ -126,30 +126,32 @@ class InspListCSpider(CSVFeedSpider):
                     perm_list.append(perm_table_line)
             else:
                 perm_list.append(dict())
-            permits_table_line.update({'perm_table': perm_list})
-            insp_table = response.xpath(INSP_ROWS_XPATH)
+            table_line.update({'perm_table': perm_list})
+            insp_table_selector = response.xpath(INSP_ROWS_XPATH)
             # columns: INSP #, INSPECTION DATE, STATUS, TYPE DESCRIPTION
-            if insp_table:
-                for insp_line in insp_table:
+            if insp_table_selector:
+                for insp_line in insp_table_selector:
                     insp_table_line = InspTableLine()
                     # //*[@id="resultstable_inspections"]/tbody/tr[1]/td[1]/a
                     insp_table_line['insp_n'] = insp_line.xpath('td[1]/a/text()').get()
-                    insp_date = datetime.strptime(insp_line.xpath('td[2]/text()').get(), '%m/%d/%Y')
-                    insp_table_line['insp_date'] = insp_date.strftime('%Y-%m-%d')
+                    # insp_date = datetime.strptime(insp_line.xpath('td[2]/text()').get(), '%m/%d/%Y')
+                    insp_table_line['insp_date'] = insp_line.xpath('td[2]/text()').get() # insp_date.strftime('%Y-%m-%d')
                     # insp_table_line['insp_date'] = insp_line.xpath('td[2]/text()').get()
                     insp_table_line['status'] = insp_line.xpath('td[3]/text()').get()
                     insp_table_line['type_desc'] = insp_line.xpath('td[4]/text()').get()
                     insp_list.append(insp_table_line)
             else:
                 insp_list.append(dict())
-            permits_table_line.update({'insp_table': insp_list})
-            yield permits_table_line
+            table_line.update({'insp_table': insp_list})
+            yield table_line
         elif response.url == self.VALIDATE_URL:
             if not_identified(response):
-                yield None
+                table_line.update({'input_address': 'Not identified'})
+                yield table_line
             else:
-                yield None
+                table_line.update({'input_address': 'Not searcheable'})
+                yield table_line
         else:
-            self.logger('Something returned, but I dont know what it is')
-            yield None
+            table_line.update({'input_address': 'Not found'})
+            yield table_line
 
