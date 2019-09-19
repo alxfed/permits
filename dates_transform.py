@@ -61,7 +61,7 @@ def main():
                            date_parser=dateparse,
                            dtype=object)
 
-    rfile['REPORTED_COST'] = pd.to_numeric(rfile['REPORTED_COST'], downcast='unsigned')
+    rfile['REPORTED_COST'] = pd.to_numeric(rfile['REPORTED_COST'], errors='coerce')
     new_permits = rfile[rfile['ISSUE_DATE'] > start_date]
     new_large_permits = new_permits[new_permits['REPORTED_COST'] > 50000]
     new_renovations = new_large_permits[new_large_permits['PERMIT_TYPE'] == 'PERMIT - RENOVATION/ALTERATION']

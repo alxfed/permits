@@ -23,7 +23,7 @@ def not_found(response):
 class InspListCSpider(CSVFeedSpider):
     name = 'buildings'
     allowed_domains = ['webapps1.chicago.gov']
-    start_urls = ['file:///home/alxfed/dbase/one_test_new_construction.csv']
+    start_urls = ['file:///home/alxfed/dbase/new_construction.csv']
     headers = ['ID', 'PERMIT#', 'PERMIT_TYPE', 'REVIEW_TYPE', 'APPLICATION_START_DATE',
                'ISSUE_DATE', 'PROCESSING_TIME', 'STREET_NUMBER', 'STREET DIRECTION',
                'STREET_NAME', 'SUFFIX', 'WORK_DESCRIPTION', 'BUILDING_FEE_PAID',
