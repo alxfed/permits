@@ -5,9 +5,13 @@ import jsonlines
 
 
 def main():
-    with jsonlines.open('./inspections_file.jl') as reader:
-        for permit in reader:
-            print('permit')
+    with jsonlines.open('./perm_and_insp_file.jl') as reader:
+        for line in reader:
+            address = line['full_address']
+            ranaddr = line['range_address']
+            permits = line['perm_table']
+            inspect = line['insp_table']
+            print(line)
     return
 
 
