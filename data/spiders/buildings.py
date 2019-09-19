@@ -7,7 +7,7 @@ from datetime import datetime
 import re
 
 
-def not_found(response):
+def not_identified(response):
     # //*[@id="search"]/div[2]/p
     NO_MATCH_XPATH = '//*[@id="search"]/div[2]/p/text()'
     no_address_found = response.xpath(NO_MATCH_XPATH).get()
@@ -20,10 +20,24 @@ def not_found(response):
         return False
 
 
+def not_found(response):
+    # //*[@id="search"]/div[2]/p
+    NO_RESULTS_XPATH = '//*[@id="search"]/div[2]/p/text()'
+    no_address_found = response.xpath(NO_RESULTS_XPATH).get()
+    if no_address_found:
+        if no_address_found.startswith('No results found for this address.'):
+            return True
+        else:
+            return True
+    else:
+        return False
+
+
+
 class InspListCSpider(CSVFeedSpider):
     name = 'buildings'
     allowed_domains = ['webapps1.chicago.gov']
-    start_urls = ['file:///home/alxfed/dbase/new_construction.csv']
+    start_urls = ['file:///home/alxfed/dbase/another_test_new_construction.csv']
     headers = ['ID', 'PERMIT#', 'PERMIT_TYPE', 'REVIEW_TYPE', 'APPLICATION_START_DATE',
                'ISSUE_DATE', 'PROCESSING_TIME', 'STREET_NUMBER', 'STREET DIRECTION',
                'STREET_NAME', 'SUFFIX', 'WORK_DESCRIPTION', 'BUILDING_FEE_PAID',
@@ -93,6 +107,8 @@ class InspListCSpider(CSVFeedSpider):
         perm_list = []
         insp_list = []
         if response.url == self.INSPECTIONS_URL:
+            if not_found(response):
+                yield None
             input_address = response.xpath('/html/body/div/div[4]/div[3]/p/text()').get()
             range_address = response.xpath('/html/body/div/div[4]/div[4]/p/text()').get()
             permits_table_line.update({'input_address': input_address,
@@ -129,8 +145,8 @@ class InspListCSpider(CSVFeedSpider):
             permits_table_line.update({'insp_table': insp_list})
             yield permits_table_line
         elif response.url == self.VALIDATE_URL:
-            if not_found(response):
-                yield permits_table_line
+            if not_identified(response):
+                yield None
             else:
                 yield None
         else:
