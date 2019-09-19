@@ -16,7 +16,8 @@ def dateparse(x):
 
 def main():
     input_file_path = '/home/alxfed/Downloads/Building_Permits.csv'
-    output_file_path = '/home/alxfed/Downloads/Transformed_Building_Permits.csv'
+    renovations_file_path = '/home/alxfed/Downloads/Renovations_Permits.csv'
+    new_constructions_path = '/home/alxfed/Downloads/New_Construction_Permits.csv'
 
     start_date = datetime(2018, 12, 8, 0, 0)
     end_date = datetime(2019, 9, 18, 0, 0)
@@ -66,7 +67,8 @@ def main():
     new_renovations = new_large_permits[new_large_permits['PERMIT_TYPE'] == 'PERMIT - RENOVATION/ALTERATION']
     new_new_constructions = new_large_permits[new_large_permits['PERMIT_TYPE'] == 'PERMIT - NEW CONSTRUCTION']
 
-    new_renovations.to_csv(output_file_path, index=False)
+    new_renovations.to_csv(renovations_file_path, index=False)
+    new_new_constructions.to_csv(new_constructions_path, index=False)
     return
 
 
