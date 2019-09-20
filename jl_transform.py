@@ -14,9 +14,8 @@ def main():
                 full_address = line['full_address']
                 input_address = line['input_address']
                 range_address = line['range_address']
-                perm_table = line['perm_table']
                 insp_table = line['insp_table']
-                perm_table[0] = {'amended': 246}
+                line['perm_table'][0] = {'amended': 246}
                 # transform
                 writer.write(line)
         writer.close()
