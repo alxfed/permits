@@ -9,10 +9,16 @@ def read_into_pd(inpfile):
     data = pd.read_json(inpfile, lines=True)
     return data
 
+def write_pd_to_jl(data, outfile):
+    data.to_json(outfile, orient='records', lines=True)
+    return
+
 def main():
     # renovation_alteration_scraped.jl
     INP_FILE = '/home/alxfed/dbase/new_construction_scraped.jl'
     OUT_FILE = '/home/alxfed/dbase/new_construction_procssd.jl'
+    df = read_into_pd(INP_FILE)
+    res = write_pd_to_jl(df, OUT_FILE)
     with jsonlines.open(INP_FILE, mode='r') as reader:
         with jsonlines.open(OUT_FILE, mode='a') as writer:
             for line in reader:
