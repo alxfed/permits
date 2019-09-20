@@ -2,7 +2,12 @@
 """https://jsonlines.readthedocs.io/en/latest/
 """
 import jsonlines
+import pandas as pd
 
+
+def read_into_pd(inpfile):
+    data = pd.read_json(inpfile, lines=True)
+    return data
 
 def main():
     # renovation_alteration_scraped.jl
