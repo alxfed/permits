@@ -6,16 +6,16 @@ import requests
 
 enable_logging = True
 if enable_logging:
-    debug_log = open("book.log","w")
+    request_log = open("book.log","w")
 
 
 def log(func):
     if enable_logging:
         def callf(*args,**kwargs):
-            debug_log.write("Calling %s: %s, %s\n" %
+            request_log.write("Calling %s: %s, %s\n" %
                             (func.__name__, args, kwargs))
             r = func(*args,**kwargs)
-            debug_log.write("%s returned %s\n" % (func.__name, r))
+            request_log.write("%s returned %s\n" % (func.__name, r))
             return r
         return callf
     else:
@@ -46,4 +46,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    request_log.close()
     print('main - done')
