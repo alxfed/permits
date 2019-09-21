@@ -15,7 +15,7 @@ def write_pd_to_jl(data, outfile):
 
 def main():
     # renovation_alteration_scraped.jl
-    INP_FILE = '/home/alxfed/dbase/new_construction_scraped.jl'
+    INP_FILE = '/home/alxfed/dbase/renovation_alteration_scraped.jl'
     OUT_FILE = '/home/alxfed/dbase/inspections.jl'
     #df = read_into_pd(INP_FILE)
     #res = write_pd_to_jl(df, OUT_FILE)
@@ -24,10 +24,13 @@ def main():
         for line in reader:
             insp_table = line['insp_table']
             for row in insp_table:
-                if row['type_desc'] in results:
-                    pass
+                if 'type_desc' in row.keys():
+                    if row['type_desc'] in results:
+                        pass
+                    else:
+                        results.add(row['type_desc'])
                 else:
-                    results.add(row['type_desc'])
+                    pass
     reader.close()
     return
 
