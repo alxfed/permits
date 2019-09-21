@@ -25,7 +25,7 @@ def log(func):
 def main():
     # here's the logging decorator
     @log
-    def clicksend_api(num, message):
+    def clicksend(num, message):
         try:
             res = requests.Request('clicksend.com')
             pass
@@ -36,7 +36,7 @@ def main():
 
     num = 3129709819
     message = 'test message'
-    res = clicksend_api(num, message)
+    res = clicksend(num, message)
     if res.status() == 200:
         print('ok')
     else:
