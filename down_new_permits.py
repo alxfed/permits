@@ -55,8 +55,8 @@ def main():
     limit = 1000  # limit of the frame within the time window
     offset = 0  # offset of the frame within the time window
 
-    api_frame = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}"'
-    # = api_call + f'&$limit={limit}&$offset={offset}'
+    api_call = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}"'
+    api_frame = api_call + f'&$limit={limit}&$offset={offset}'
 
     dst = data_chunk(api_frame)
 
