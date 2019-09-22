@@ -7,7 +7,7 @@ import pandas as pd
 from os import environ
 
 RESOURCE_URL = 'data.cityofchicago.org'
-RESOURCE_ID  = 'ydr8-5enu'                      # Modelling data
+RESOURCE_ID  = 'ydr8-5enu'                      # permit data
 api_token = environ['API_TOKEN']
 
 api_url = f'https://{RESOURCE_URL}/resource/{RESOURCE_ID}.json'
