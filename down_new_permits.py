@@ -62,8 +62,11 @@ def main():
             offset += limit
         else:
             data_to_read_left = False
+    big_permits = data[data['reported_cost'] > 100000]
     new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
+    large_newconst = big_permits[big_permits['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
     renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
+    large_renow = big_permits[big_permits['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
     return
 
 
