@@ -53,7 +53,7 @@ def main():
                          month=12, day=2, hour=0,  # the first empty day in the dataset (End of it)
                          minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
-    limit = 1000  # limit of a frame within the time window
+    limit = 1000  # limit of the frame within the time window
     offset = 0  # offset of the frame within the time window
 
     api_call = api_url + f'?$where=sale_date between {start_str!r} and {end_str!r}'
