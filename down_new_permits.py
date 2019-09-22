@@ -39,8 +39,7 @@ def data_chunk(uri):
 
 
 def main():
-    '''
-    # Read a chunk with date_issued in predefined window
+    '''Read a chunk with date_issued in predefined window
     '''
     start_year = 2018
     start_dt = dt.datetime(year=start_year,
@@ -74,17 +73,14 @@ if __name__ == '__main__':
     main()
     print('main - done')
 
-'''
-# info['sale_date'] = str(info['sale_date']) - Nope of course
 
+'''
 # long complex request
 
 api_url = "https://data.cityofchicago.org/resource/6zsd-86xi.json?$where=date between '2015-01-10T12:00:00' and '2015-01-10T14:00:00'"
 
 # date-time or "floating timestamp" are in ISO8601 Times
 # https://en.wikipedia.org/wiki/ISO_8601#Times
-
-dst = rqst() # works
 
 # url string formation
 
@@ -102,7 +98,6 @@ api_request = f'{api_url}?${requ}={argu}'
 
 # but if the parameters of the query are already in a dictionary
 # then the trick is:
-
 
 person = {'name': 'Alex', 'age': 64}
 message = "Hello, {name}. You are {age}.".format(**person)
