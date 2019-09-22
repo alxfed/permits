@@ -65,11 +65,8 @@ def main():
         print("Here's your info: ")
         new_chunk = pd.DataFrame.from_records(dst)
         new_chunk['sale_date'] = pd.to_datetime(new_chunk['sale_date'])
-
     else:
         print('[!] Request Failed')
-
-    print('ok!')
     return
 
 
