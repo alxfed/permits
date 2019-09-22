@@ -54,9 +54,9 @@ def main():
         new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
         new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
         new_chunk['reported_cost'] = pd.to_numeric(new_chunk['reported_cost'], downcast='unsigned')
-        data = data.append(new_chunk) # , ignore_index = True)
-        if new_chunk.id.count() == 1000:
-            offset = offset + 1000
+        data = data.append(new_chunk, sort=True, ignore_index = True)
+        if new_chunk.id.count() == limit:
+            offset += limit
         else:
             data_to_read_left = False
     print('data is ready')
