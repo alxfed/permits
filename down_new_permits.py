@@ -58,7 +58,8 @@ def main():
             data.append(new_chunk, ignore_index = True)
             if new_chunk.count() == 1000:
                 offset = offset + 1000
-            elif new_chunk.count() < 1000:
+                print('offset: ', offset)
+            else:
                 data_to_read_left = False
         else:
             data_to_read_left = False
