@@ -40,26 +40,30 @@ def main():
     """Read a chunk with date_issued in predefined window
     """
     data = pd.DataFrame()
+
     start_dt = dt.datetime(year=2019, month=7, day=1, hour=0, minute=0, second=0)
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
     end_dt = dt.datetime(year=2019, month=9, day=20, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
     api_call = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}"'
+
     limit = 1000  # limit of the frame within the time window
     offset = 0
     data_to_read_left = True
+
     while data_to_read_left:
         api_frame = api_call + f'&$limit={limit}&$offset={offset}'
         new_chunk = pd.DataFrame.from_records(data_chunk(api_frame))
         new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
         new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
         new_chunk['reported_cost'] = pd.to_numeric(new_chunk['reported_cost'], downcast='unsigned')
-        data = data.append(new_chunk, sort=True, ignore_index = True)
+        data = data.append(new_chunk, sort=False, ignore_index = True)
         if new_chunk.id.count() == limit:
             offset += limit
         else:
             data_to_read_left = False
-    print('data is ready')
+    new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
+    renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
     return
 
 
