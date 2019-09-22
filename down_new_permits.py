@@ -50,19 +50,16 @@ def main():
     data_to_read_left = True
     while data_to_read_left:
         api_frame = api_call + f'&$limit={limit}&$offset={offset}'
-        dch = data_chunk(api_frame)
-        if dch:
-            new_chunk = pd.DataFrame.from_records(dch)
-            new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
-            new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
-            data.append(new_chunk, ignore_index = True)
-            if new_chunk.count() == 1000:
-                offset = offset + 1000
-                print('offset: ', offset)
-            else:
-                data_to_read_left = False
+        new_chunk = pd.DataFrame.from_records(data_chunk(api_frame))
+        new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
+        new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
+        new_chunk['reported_cost'] = pd.to_numeric(new_chunk['reported_cost'], downcast='unsigned')
+        data = data.append(new_chunk) # , ignore_index = True)
+        if new_chunk.id.count() == 1000:
+            offset = offset + 1000
         else:
             data_to_read_left = False
+    print('data is ready')
     return
 
 
