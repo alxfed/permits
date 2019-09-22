@@ -6,14 +6,12 @@ import requests
 import pandas as pd
 from os import environ
 
+
 RESOURCE_URL = 'data.cityofchicago.org'
-RESOURCE_ID  = 'ydr8-5enu'                      # permit data
+RESOURCE_ID  = 'ydr8-5enu'                      # permits data
 api_token = environ['API_TOKEN']
-
 api_url = f'https://{RESOURCE_URL}/resource/{RESOURCE_ID}.json'
-
-header = {'Content-Type': 'application/json',
-           'X-App-Token': api_token}
+header = {'Content-Type': 'application/json', 'X-App-Token': api_token}
 
 
 def data_chunk(uri):
@@ -39,33 +37,31 @@ def data_chunk(uri):
 
 
 def main():
-    '''Read a chunk with date_issued in predefined window
-    '''
-    start_year = 2019
-    start_dt = dt.datetime(year=start_year,
-                           month=7, day=1, hour=0,
-                           minute=0, second=0)
+    """Read a chunk with date_issued in predefined window
+    """
+    data = pd.DataFrame()
+    start_dt = dt.datetime(year=2019, month=7, day=1, hour=0, minute=0, second=0)
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
-
-    end_year = 2019
-    end_dt = dt.datetime(year=end_year,
-                         month=9, day=20, hour=0,  # the first empty day in the dataset (End of it)
-                         minute=0, second=0)
+    end_dt = dt.datetime(year=2019, month=9, day=20, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
-    limit = 1000  # limit of the frame within the time window
-    offset = 0  # offset of the frame within the time window
-
     api_call = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}"'
-    api_frame = api_call + f'&$limit={limit}&$offset={offset}'
-
-    dst = data_chunk(api_frame)
-
-    if dst:
-        print("Here's your info: ")
-        new_chunk = pd.DataFrame.from_records(dst)
-        new_chunk['sale_date'] = pd.to_datetime(new_chunk['sale_date'])
-    else:
-        print('[!] Request Failed')
+    limit = 1000  # limit of the frame within the time window
+    offset = 0
+    data_to_read_left = True
+    while data_to_read_left:
+        api_frame = api_call + f'&$limit={limit}&$offset={offset}'
+        dch = data_chunk(api_frame)
+        if dch:
+            new_chunk = pd.DataFrame.from_records(dch)
+            new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
+            new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
+            data.append(new_chunk, ignore_index = True)
+            if new_chunk.count() == 1000:
+                offset = offset + 1000
+            elif new_chunk.count() < 1000:
+                data_to_read_left = False
+        else:
+            data_to_read_left = False
     return
 
 
