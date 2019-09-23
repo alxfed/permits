@@ -25,7 +25,8 @@ def main():
     try:
         # Send sms message(s)
         api_response = api_instance.sms_send_post(sms_messages)
-        print(api_response)
+        sent_list = api_response['data']['messages']
+        print(sent_list)
     except ApiException as e:
         print("Exception when calling SMSApi->sms_send_post: %s\n" % e)
     return
