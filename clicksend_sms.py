@@ -17,7 +17,7 @@ configuration.password = environ['API_KEY']
 def main():
     # create an instance of the API class
     api_instance = clicksend_client.SMSApi(clicksend_client.ApiClient(configuration))
-    sms_message = SmsMessage(source="php",
+    sms_message = SmsMessage(source="sdk",
                              body="This is the body of the message.",
                              country='US',
                              to="+13129709819")
@@ -34,22 +34,3 @@ def main():
 if __name__ == '__main__':
     main()
     print('main - done')
-
-'''
-Body parameter
-
-{
-  "messages": [
-    {
-      "to": "+61411111111",
-      "source": "sdk",
-      "body": "body"
-    },
-    {
-      "list_id": 0,
-      "source": "sdk",
-      "body": "body"
-    }
-  ]
-}
-'''
