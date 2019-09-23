@@ -78,23 +78,6 @@ if __name__ == '__main__':
 '''
 # long complex request
 
-api_url = "https://data.cityofchicago.org/resource/6zsd-86xi.json?$where=date between '2015-01-10T12:00:00' and '2015-01-10T14:00:00'"
-
-# date-time or "floating timestamp" are in ISO8601 Times
-# https://en.wikipedia.org/wiki/ISO_8601#Times
-
-# url string formation
-
-api_url_base = 'data.cityofchicago.org'
-api_resource_id = 'ydr8-5enu'
-
-api_url = 'https://{}/resource/{}.json'.format(api_url_base, api_resource_id)
-
-# but f-string for complex requests _for sure_
-
-requ = 'where'
-argu = ''
-
 api_request = f'{api_url}?${requ}={argu}'
 
 # but if the parameters of the query are already in a dictionary
