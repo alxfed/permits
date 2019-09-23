@@ -27,6 +27,7 @@ def main():
         api_response = api_instance.sms_send_post(sms_messages)
         sent_list = api_response['data']['messages']
         print(sent_list)
+        # then - https://developers.clicksend.com/docs/rest/v3/?python#view-sms-receipts
     except ApiException as e:
         print("Exception when calling SMSApi->sms_send_post: %s\n" % e)
     return
