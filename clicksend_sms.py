@@ -17,7 +17,7 @@ configuration.password = environ['API_KEY']
 def main():
     # create an instance of the API class
     api_instance = clicksend_client.SMSApi(clicksend_client.ApiClient(configuration))
-    sms_message = SmsMessage(source="+13129709819",
+    sms_message = SmsMessage(source="Marfa Cabinets",
                              body="This is the body of the message.",
                              to="+13129709819")
     sms_messages = clicksend_client.SmsMessageCollection(messages=[sms_message])
