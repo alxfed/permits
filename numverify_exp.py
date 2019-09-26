@@ -12,7 +12,7 @@ def main():
     par = {'number': ph}
     resp = requests.get(api_url, params=par)
     res = resp.json()
-    re = res['line_type']
+    line_type = res['line_type']
     return
 
 
