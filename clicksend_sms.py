@@ -29,6 +29,7 @@ def main():
         print(sent_list)
         # then - https://developers.clicksend.com/docs/rest/v3/?python#view-sms-receipts
         # https://developers.clicksend.com/docs/rest/v3/#create-test-sms-receipt
+        # inbound https://developers.clicksend.com/docs/rest/v3/#view-inbound-sms
     except ApiException as e:
         print("Exception when calling SMSApi->sms_send_post: %s\n" % e)
     return
