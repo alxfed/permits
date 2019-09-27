@@ -21,7 +21,7 @@ def main():
 
     try:
         # Get all inbound sms
-        api_response = api_instance.sms_inbound_get(page=page, limit=limit)
+        api_response = api_instance.sms_inbound_get(page=page, limit=limit, _return_http_data_only=True)
         a = api_response.replace("\'", '"')
         di = dict(a)
         print(api_response)
