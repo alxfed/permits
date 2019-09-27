@@ -1,32 +1,45 @@
 # -*- coding: utf-8 -*-
-"""...
+"""poll the SMS inbox, then erase it
 """
-from __future__ import print_function
-import clicksend_client
-from clicksend_client.rest import ApiException
-import json
+import requests
+import base64
 from os import environ
 
 
+def ingest_list(thelist):
+    for line in thelist:
+        pass
+    return
+
+
 def main():
-    # Configure HTTP basic authorization: BasicAuth
-    configuration = clicksend_client.Configuration()
-    configuration.username = environ['USERNAME']
-    configuration.password = environ['API_KEY']
-
-    # create an instance of the API class
-    api_instance = clicksend_client.SMSApi(clicksend_client.ApiClient(configuration))
-    page = 1  # int | Page number (optional) (default to 1)
-    limit = 10  # int | Number of records per page (optional) (default to 10)
-
+    INBOUND_INBOX_URL = 'https://rest.clicksend.com/v3/sms/inbound'
+    username = environ['USER_NAME'] # 'Aladdin'
+    password = environ['API_KEY'] # 'open sesame'
+    data = requests.get(INBOUND_INBOX_URL, auth=(username, password)).json()['data']
+    total = data['total']
+    per_page = data['per_page']
+    current_page = data['current_page']
+    last_page = data['last_page']
+    message_list = data['data']
+    if total > 0:
+        ingest_list(message_list)
+        for page in range(2, last_page+1):
+            # request the other pages and deal with their message_lists
+            param = {'page': page}
+            msg_list = requests.get(INBOUND_INBOX_URL, auth=(username, password), params=param).json()['data']['data']
+            ingest_list(msg_list)
+    else:
+        return
+    auth_str = base64.b64encode(f'{username}:{password}'.encode())
+    headers = {'Authorization': 'Basic ' + auth_str.decode()}
+    DELETE_MESSAGES_URL = 'https://rest.clicksend.com/v3/sms/inbound-read'
     try:
-        # Get all inbound sms
-        api_response = api_instance.sms_inbound_get(page=page, limit=limit, _return_http_data_only=True)
-        a = api_response.replace("\'", '"')
-        di = dict(a)
-        print(api_response)
-    except ApiException as e:
-        print("Exception when calling SMSApi->sms_inbound_get: %s\n" % e)
+        resp = requests.put(DELETE_MESSAGES_URL, headers=headers)
+        if resp.status_code == 200:
+            print('Ingested messages deleted')
+    except requests.exceptions.RequestException as e:
+        raise e
     return
 
 

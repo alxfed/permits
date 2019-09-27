@@ -5,10 +5,15 @@ import pandas as pd
 
 
 def main():
-    df = pd.DataFrame([[1, 2], [3, 4]], columns=list('AB'))
-    df2 = pd.DataFrame([[5, 6], [7, 8]], columns=list('AB'))
-    df = df.append(df2, ignore_index=True)
-    print(df)
+    total = 22
+    per_page = 15
+    current_page = 1
+    last_page = 3
+    message_list = [1, 2, 3, 4, 5, 6, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,3, 3, 3, 3, 3, 3, 3, 3, 3,3, 3, 3, 3, 4]
+    if total > 0:
+        # deal with a message_list
+        for page in range(2, last_page + 1):
+            print(page)
     return
 
 
