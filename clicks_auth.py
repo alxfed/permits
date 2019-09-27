@@ -16,7 +16,8 @@ def main():
     # header Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
     head = 'Basic ' + auth.decode()
     header = {'Authorization': head}
-    res = requests.get(url=url, auth=HTTPBasicAuth(username, password))
+    au = HTTPBasicAuth(username, password)
+    res = requests.get(url=url, auth=(username, password))
     print('ok')
     return
 
