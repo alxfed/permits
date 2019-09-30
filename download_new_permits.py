@@ -41,9 +41,9 @@ def main():
     """
     data = pd.DataFrame()
 
-    start_dt = dt.datetime(year=2019, month=7, day=1, hour=0, minute=0, second=0)
+    start_dt = dt.datetime(year=2019, month=9, day=22, hour=0, minute=0, second=0)
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
-    end_dt = dt.datetime(year=2019, month=9, day=20, hour=0, minute=0, second=0)
+    end_dt = dt.datetime(year=2019, month=9, day=30, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
     api_call = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}"'
 
@@ -65,8 +65,12 @@ def main():
     big_permits = data[data['reported_cost'] > 100000]
     new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
     large_newconst = big_permits[big_permits['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
+    large_newconst.to_csv('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_newconst.csv', index=False)
+    large_newconst.to_json('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_newconst.jl', orient='records', lines=True)
     renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
     large_renow = big_permits[big_permits['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
+    large_renow.to_csv('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_renovation.csv', index=False)
+    large_renow.to_json('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_renovation.jl', orient='records', lines=True)
     return
 
 
