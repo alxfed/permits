@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """https://www.chicago.gov/city/en/depts/bldgs/provdrs/gen_contract.html
-
 """
 import requests
 
