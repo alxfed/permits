@@ -12,12 +12,21 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 import re
+from os import environ
 
 options = webdriver.ChromeOptions()
 # options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 options.binary_location = '/usr/bin/google-chrome'
 browser = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
+browser.get('https://connectmls-api.mredllc.com/oid/login')
+username_box = browser.find_element_by_id('j_username')
+username = environ['USERNAME']
+username_box.send_keys(username)
+username_box = browser.find_element_by_id('j_password')
+password = environ['PASSWORD']
+username_box.send_keys(password + Keys.RETURN)
+
 
 class DataSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -112,7 +121,7 @@ class DataDownloaderMiddleware(object):
             # minify html
             return HtmlResponse(where_i_am_now, body=body, encoding='utf-8', request=request)
         elif request.url.startswith(mls_url):
-            parameter = request.cb_kwargs['parameter']
+            logged_in = request.cb_kwargs['logged']
             browser.get(request.url)
             where_i_am_now = browser.current_url
             body = browser.page_source
