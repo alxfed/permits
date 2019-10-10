@@ -44,6 +44,7 @@ class InspListCSpider(CSVFeedSpider):
                'Listing Agent Name', 'Listing Agent ID', 'Listing Agent Phone',
                'Listing Agent Email', 'Selling Agent Name', 'Selling Agent ID',
                'Selling Agent Phone', 'Selling Agent Email']
+    search_url = 'https://connectmls3.mredllc.com/mls.jsp?module=search'
 
     # Do any adaptations you need here
     #def adapt_response(self, response):
@@ -59,7 +60,7 @@ class InspListCSpider(CSVFeedSpider):
             address = " ".join(tup)
             the_kwargs = {'permit_n': row['PERMIT#'],
                           'full_address': address}
-            yield scrapy.Request(url=self.INSPECTIONS_URL,
+            yield scrapy.Request(url=self.search_url,
                                  dont_filter=True,
                                  callback=self.parse_table,
                                  cb_kwargs=the_kwargs)

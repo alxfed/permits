@@ -10,6 +10,7 @@ from scrapy import signals
 from scrapy.http import HtmlResponse
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 from time import sleep
 import re
 from os import environ
@@ -20,10 +21,13 @@ options.add_argument('window-size=1920x1080')
 options.binary_location = '/usr/bin/google-chrome'
 browser = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
 loggedin = False
+where_i_am_now = ''
+searched_same = False
 
 def log_in_browser(domain):
     global browser
     global loggedin
+    global where_i_am_now
     browser.get(domain)
     username_box = browser.find_element_by_id('j_username')
     username = environ['USERNAME']
@@ -111,9 +115,12 @@ class DataDownloaderMiddleware(object):
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
         # begin list of seleniumed URLs
+        global where_i_am_now
+        global searched_same
         home_url = 'https://webapps1.chicago.gov/buildingrecords'
         login_url = 'https://connectmls-api.mredllc.com/oid/login'
         mls_url = 'https://connectmls'
+        search_url = 'https://connectmls3.mredllc.com/mls.jsp?module=search'
         # end   list of seleniumed URLs
         if request.url.startswith(home_url):
             address = request.cb_kwargs['full_address']
@@ -137,6 +144,13 @@ class DataDownloaderMiddleware(object):
         elif request.url.startswith(mls_url):
             if not loggedin:
                 log_in_browser(login_url)
+            if request.url.endswith('module=search'):
+                if not searched_same:
+                    browser.get(request.url)
+                    sleep(1)
+                    drop_down = Select(browser.find_element_by_id('search_type'))
+                    drop_down.select_by_value('MEMBER')
+                    sleep(1)
             browser.get(request.url)
             where_i_am_now = browser.current_url
             body = browser.page_source
