@@ -14,7 +14,7 @@ from time import sleep
 import re
 
 options = webdriver.ChromeOptions()
-options.add_argument('headless')
+# options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 options.binary_location = '/usr/bin/google-chrome'
 browser = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
@@ -83,6 +83,7 @@ class DataDownloaderMiddleware(object):
         home_url = 'https://webapps1.chicago.gov/buildingrecords'
         search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
         not_found_url = 'https://webapps1.chicago.gov/buildingrecords/validateaddress'
+        mls_url = 'https://connectmls3.mredllc.com'
         # Called for each request that goes through the downloader
         # middleware.
         # Must either:
@@ -118,6 +119,9 @@ class DataDownloaderMiddleware(object):
                 self.logger.info('No search result, but no validation too! Something is wrong...')
             '''
             return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
+        elif request.url.startswith(mls_url):
+            parameter = request.cb_kwargs['parameter']
+            browser.get(request.url)
         else:
             return None
 
