@@ -19,13 +19,26 @@ options = webdriver.ChromeOptions()
 options.add_argument('window-size=1920x1080')
 options.binary_location = '/usr/bin/google-chrome'
 browser = webdriver.Chrome(executable_path='/opt/google/chrome/chromedriver', chrome_options=options)
-browser.get('https://connectmls-api.mredllc.com/oid/login')
-username_box = browser.find_element_by_id('j_username')
-username = environ['USERNAME']
-username_box.send_keys(username)
-username_box = browser.find_element_by_id('j_password')
-password = environ['PASSWORD']
-username_box.send_keys(password + Keys.RETURN)
+loggedin = False
+
+def log_in_browser(domain):
+    global browser
+    global loggedin
+    browser.get(domain)
+    username_box = browser.find_element_by_id('j_username')
+    username = environ['USERNAME']
+    username_box.send_keys(username)
+    username_box = browser.find_element_by_id('j_password')
+    password = environ['PASSWORD']
+    username_box.send_keys(password + Keys.RETURN)
+    sleep(5)
+    where_i_am_now = browser.current_url
+    if where_i_am_now.endswith('freshLogin=true'):
+        loggedin = True
+    else:
+        raise AssertionError
+    return
+
 
 
 class DataSpiderMiddleware(object):
@@ -99,6 +112,7 @@ class DataDownloaderMiddleware(object):
         #   installed downloader middleware will be called
         # begin list of seleniumed URLs
         home_url = 'https://webapps1.chicago.gov/buildingrecords'
+        login_url = 'https://connectmls-api.mredllc.com/oid/login'
         mls_url = 'https://connectmls'
         # end   list of seleniumed URLs
         if request.url.startswith(home_url):
@@ -121,7 +135,8 @@ class DataDownloaderMiddleware(object):
             # minify html
             return HtmlResponse(where_i_am_now, body=body, encoding='utf-8', request=request)
         elif request.url.startswith(mls_url):
-            logged_in = request.cb_kwargs['logged']
+            if not loggedin:
+                log_in_browser(login_url)
             browser.get(request.url)
             where_i_am_now = browser.current_url
             body = browser.page_source
