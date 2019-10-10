@@ -126,7 +126,7 @@ class DataDownloaderMiddleware(object):
             body = body.replace('\t', '')
             body = body.replace('\n', '')
             body = re.sub('>\s*<', '><', body, 0, re.M)
-            # minify html
+            # / minify html
             return HtmlResponse(whre_i_am_now, body=body, encoding='utf-8', request=request)
         else:
             return None
