@@ -81,8 +81,6 @@ class DataDownloaderMiddleware(object):
 
     def process_request(self, request, spider):
         home_url = 'https://webapps1.chicago.gov/buildingrecords'
-        search_url = 'https://webapps1.chicago.gov/buildingrecords/doSearch'
-        not_found_url = 'https://webapps1.chicago.gov/buildingrecords/validateaddress'
         mls_url = 'https://connectmls3.mredllc.com'
         # Called for each request that goes through the downloader
         # middleware.
@@ -103,7 +101,7 @@ class DataDownloaderMiddleware(object):
             text_box = browser.find_element_by_id('fullAddress')
             text_box.send_keys(address + Keys.RETURN)
             sleep(1)
-            where_i_am = browser.current_url
+            whre_i_am_now = browser.current_url
             body = browser.page_source
             # minify html
             body = body.replace('\t', '')
@@ -111,17 +109,25 @@ class DataDownloaderMiddleware(object):
             body = re.sub('>\s*<', '><',body, 0, re.M)
             # minify html
             '''
-            if where_i_am == search_url:
+            if whre_i_am_now == search_url:
                 pass
-            elif where_i_am == not_found_url:
+            elif whre_i_am_now == not_found_url:
                 self.logger.info(f'No search result for address: {address}!')
             else:
                 self.logger.info('No search result, but no validation too! Something is wrong...')
             '''
-            return HtmlResponse(where_i_am, body=body, encoding='utf-8', request=request)
+            return HtmlResponse(whre_i_am_now, body=body, encoding='utf-8', request=request)
         elif request.url.startswith(mls_url):
             parameter = request.cb_kwargs['parameter']
             browser.get(request.url)
+            whre_i_am_now = browser.current_url
+            body = browser.page_source
+            # minify html
+            body = body.replace('\t', '')
+            body = body.replace('\n', '')
+            body = re.sub('>\s*<', '><', body, 0, re.M)
+            # minify html
+            return HtmlResponse(whre_i_am_now, body=body, encoding='utf-8', request=request)
         else:
             return None
 
