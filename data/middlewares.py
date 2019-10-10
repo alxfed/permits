@@ -80,8 +80,6 @@ class DataDownloaderMiddleware(object):
         return s
 
     def process_request(self, request, spider):
-        home_url = 'https://webapps1.chicago.gov/buildingrecords'
-        mls_url = 'https://connectmls3.mredllc.com'
         # Called for each request that goes through the downloader
         # middleware.
         # Must either:
@@ -90,6 +88,10 @@ class DataDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
+        # begin list of seleniumed URLs
+        home_url = 'https://webapps1.chicago.gov/buildingrecords'
+        mls_url = 'https://connectmls'
+        # end   list of seleniumed URLs
         if request.url.startswith(home_url):
             address = request.cb_kwargs['full_address']
             browser.get('https://webapps1.chicago.gov/buildingrecords/home')
@@ -101,33 +103,25 @@ class DataDownloaderMiddleware(object):
             text_box = browser.find_element_by_id('fullAddress')
             text_box.send_keys(address + Keys.RETURN)
             sleep(1)
-            whre_i_am_now = browser.current_url
+            where_i_am_now = browser.current_url
             body = browser.page_source
             # minify html
             body = body.replace('\t', '')
             body = body.replace('\n', '')
             body = re.sub('>\s*<', '><',body, 0, re.M)
             # minify html
-            '''
-            if whre_i_am_now == search_url:
-                pass
-            elif whre_i_am_now == not_found_url:
-                self.logger.info(f'No search result for address: {address}!')
-            else:
-                self.logger.info('No search result, but no validation too! Something is wrong...')
-            '''
-            return HtmlResponse(whre_i_am_now, body=body, encoding='utf-8', request=request)
+            return HtmlResponse(where_i_am_now, body=body, encoding='utf-8', request=request)
         elif request.url.startswith(mls_url):
             parameter = request.cb_kwargs['parameter']
             browser.get(request.url)
-            whre_i_am_now = browser.current_url
+            where_i_am_now = browser.current_url
             body = browser.page_source
             # minify html
             body = body.replace('\t', '')
             body = body.replace('\n', '')
             body = re.sub('>\s*<', '><', body, 0, re.M)
             # / minify html
-            return HtmlResponse(whre_i_am_now, body=body, encoding='utf-8', request=request)
+            return HtmlResponse(where_i_am_now, body=body, encoding='utf-8', request=request)
         else:
             return None
 
