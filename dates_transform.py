@@ -11,7 +11,7 @@ def dateparse(x):
     if x is nan:
         return datetime(2018, 12, 8, 0, 0)
     else:
-        return pd.datetime.strptime(x, '%m/%d/%Y')
+        return pd.datetime.strptime(x, '%m/%d/%Y') #  %H:%M:%S.%f if there are hours, minutes, seconts and milliseconds
 
 
 def main():
