@@ -65,7 +65,7 @@ def main():
             data_to_read_left = False
     new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
     new_construction.to_csv('/media/alxfed/toca/presentation/newconst.csv', index=False)
-    new_construction.to_json('/media/alxfed/toca/presentation/newconstnewconst.jl', orient='records', lines=True)
+    new_construction.to_json('/media/alxfed/toca/presentation/newconst.jl', orient='records', lines=True)
     renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
     renovation.to_csv('/media/alxfed/toca/presentation/renovation.csv', index=False)
     renovation.to_json('/media/alxfed/toca/presentation/renovation.jl', orient='records', lines=True)
