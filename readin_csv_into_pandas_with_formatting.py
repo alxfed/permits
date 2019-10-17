@@ -15,6 +15,7 @@ def dateparse(x):
 
 
 def main():
+    unique_gen_contractors = set()
     input_file = '/media/alxfed/toca/presentation/all_new_permits.csv'
     col_type = {'id': np.int, 'permit_': np.int, 'permit_type': object, 'review_type': object,
                 'application_start_date': object, 'issue_date': object, 'processing_time': object,
@@ -64,6 +65,9 @@ def main():
                                     'issue_date'],
                        date_parser=dateparse,
                        dtype=col_type)
+    for indx, row in data.iterrows():
+        a = row['id']
+        b = row['permit_']
     return
 
 
