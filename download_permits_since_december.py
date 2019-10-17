@@ -63,6 +63,8 @@ def main():
             print('offset: ', offset)
         else:
             data_to_read_left = False
+    data.to_csv('/media/alxfed/toca/presentation/all_new_permits.csv', index=False)
+    data.to_json('/media/alxfed/toca/presentation/all_new_permits.jl', orient='records', lines=True)
     new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
     new_construction.to_csv('/media/alxfed/toca/presentation/newconstruction.csv', index=False)
     new_construction.to_json('/media/alxfed/toca/presentation/newconstruction.jl', orient='records', lines=True)
