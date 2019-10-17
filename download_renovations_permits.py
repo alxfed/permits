@@ -45,7 +45,7 @@ def main():
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
     end_dt = dt.datetime(year=2019, month=10, day=18, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
-    permit_type = 'PERMIT - NEW CONSTRUCTION'
+    permit_type = 'PERMIT - RENOVATION/ALTERATION'
     api_call = api_url + f'?$where=issue_date between "{start_str}" and "{end_str}" AND permit_type = "{permit_type}"'
 
     limit = 1000  # limit of the frame within the time window
@@ -64,8 +64,8 @@ def main():
             print('offset: ', offset)
         else:
             data_to_read_left = False
-    data.to_csv('/media/alxfed/toca/presentation/newconsts.csv', index=False)
-    data.to_json('/media/alxfed/toca/presentation/newconsts.jl', orient='records', lines=True)
+    data.to_csv('/media/alxfed/toca/presentation/renovations.csv', index=False)
+    data.to_json('/media/alxfed/toca/presentation/renovations.jl', orient='records', lines=True)
     return
 
 
