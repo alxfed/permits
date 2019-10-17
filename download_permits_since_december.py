@@ -60,17 +60,15 @@ def main():
         data = data.append(new_chunk, sort=False, ignore_index = True)
         if new_chunk.id.count() == limit:
             offset += limit
+            print('offset: ', offset)
         else:
             data_to_read_left = False
-    big_permits = data[data['reported_cost'] > 100000]
     new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
-    large_newconst = big_permits[big_permits['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
-    large_newconst.to_csv('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_newconst.csv', index=False)
-    large_newconst.to_json('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_newconst.jl', orient='records', lines=True)
+    new_construction.to_csv('/media/alxfed/toca/presentation/newconst.csv', index=False)
+    new_construction.to_json('/media/alxfed/toca/presentation/newconstnewconst.jl', orient='records', lines=True)
     renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
-    large_renow = big_permits[big_permits['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
-    large_renow.to_csv('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_renovation.csv', index=False)
-    large_renow.to_json('/media/alxfed/toca/aa-crm/regular/downloaded/last_week_renovation.jl', orient='records', lines=True)
+    renovation.to_csv('/media/alxfed/toca/presentation/renovation.csv', index=False)
+    renovation.to_json('/media/alxfed/toca/presentation/renovation.jl', orient='records', lines=True)
     return
 
 
