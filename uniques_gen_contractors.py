@@ -81,7 +81,8 @@ def main():
                         'zip': row[f'contact_{str(n+1)}_zipcode'],
                     }
                     output_list.append(line)
-
+    output = pd.DataFrame(output_list)
+    output.to_csv(output_file, index=False)
 
 
 if __name__ == '__main__':
