@@ -30,7 +30,7 @@ def main():
                 'total_fee': object,
                 'contact_1_type': object, 'contact_1_name': object, 'contact_1_city': object,
                 'contact_1_state': object, 'contact_1_zipcode': object,
-                'reported_cost': object, 'pin1': object,
+                'reported_cost': np.float64, 'pin1': object,
                 'community_area': object, 'census_tract': object, 'ward': object,
                 'xcoordinate': object, 'ycoordinate': object, 'latitude': object, 'longitude': object,
                 'location': object,
@@ -68,19 +68,22 @@ def main():
                        date_parser=dateparse,
                        dtype=col_type)
     for row_n, row in data.iterrows():
-        for n in range(14):
-            contact_type = row[f'contact_{str(n+1)}_type']
-            if contact_type == 'CONTRACTOR-GENERAL CONTRACTOR':
-                name = row[f'contact_{str(n+1)}_name']
-                if name not in unique_gen_contractors:
-                    unique_gen_contractors.add(name)
-                    line = {
-                        'name': name,
-                        'city': row[f'contact_{str(n+1)}_city'],
-                        'state': row[f'contact_{str(n+1)}_state'],
-                        'zip': row[f'contact_{str(n+1)}_zipcode'],
-                    }
-                    output_list.append(line)
+        if row['reported_cost'] > 100000:
+            for n in range(14):
+                contact_type = row[f'contact_{str(n+1)}_type']
+                if contact_type == 'CONTRACTOR-GENERAL CONTRACTOR':
+                    name = row[f'contact_{str(n+1)}_name']
+                    if name not in unique_gen_contractors:
+                        unique_gen_contractors.add(name)
+                        line = {
+                            'name': name,
+                            'city': row[f'contact_{str(n+1)}_city'],
+                            'state': row[f'contact_{str(n+1)}_state'],
+                            'zip': row[f'contact_{str(n+1)}_zipcode'],
+                        }
+                        output_list.append(line)
+                        print(line)
+
     output = pd.DataFrame(output_list)
     output.to_csv(output_file, index=False)
 
