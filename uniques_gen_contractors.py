@@ -17,8 +17,8 @@ def dateparse(x):
 def main():
     unique_gen_contractors = set()
     output_list = list()
-    input_file = '/media/alxfed/toca/presentation/all_new_permits.csv'
-    output_file = '/media/alxfed/toca/presentation/unique_gen_contractors.csv'
+    input_file = '/media/alxfed/toca/presentation/january_2019_large_newconst.csv'
+    output_file = '/media/alxfed/toca/presentation/january_2019_large_newconst_unique_gen_contractors.csv'
     col_type = {'id': np.int, 'permit_': np.int, 'permit_type': object, 'review_type': object,
                 'application_start_date': object, 'issue_date': object, 'processing_time': object,
                 'street_number': object, 'street_direction': object, 'street_name': object, 'suffix': object,
@@ -70,16 +70,17 @@ def main():
     for row_n, row in data.iterrows():
         if row['reported_cost'] > 100000:
             for n in range(14):
-                contact_type = row[f'contact_{str(n+1)}_type']
+                contact_number = str(n + 1)
+                contact_type = row[f'contact_{contact_number}_type']
                 if contact_type == 'CONTRACTOR-GENERAL CONTRACTOR':
-                    name = row[f'contact_{str(n+1)}_name']
+                    name = row[f'contact_{contact_number}_name']
                     if name not in unique_gen_contractors:
                         unique_gen_contractors.add(name)
                         line = {
                             'name': name,
-                            'city': row[f'contact_{str(n+1)}_city'],
-                            'state': row[f'contact_{str(n+1)}_state'],
-                            'zip': row[f'contact_{str(n+1)}_zipcode'],
+                            'city': row[f'contact_{contact_number}_city'],
+                            'state': row[f'contact_{contact_number}_state'],
+                            'zip': row[f'contact_{contact_number}_zipcode'],
                         }
                         output_list.append(line)
                         print(line)
