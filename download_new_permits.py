@@ -58,7 +58,7 @@ def main():
         new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
         new_chunk['reported_cost'] = pd.to_numeric(new_chunk['reported_cost'], downcast='unsigned')
         data = data.append(new_chunk, sort=False, ignore_index = True)
-        if new_chunk.id.count() == limit:
+        if new_chunk.id.count() == limit:   # the number of items in the 'id' column which is never empty
             offset += limit
         else:
             data_to_read_left = False
