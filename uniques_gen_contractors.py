@@ -20,7 +20,7 @@ def main():
     input_file = '/media/alxfed/toca/presentation/january_2019_large_newconst.csv'
     output_file = '/media/alxfed/toca/presentation/january_2019_large_newconst_unique_gen_contractors.csv'
     col_type = {'id': np.int, 'permit_': np.int, 'permit_type': object, 'review_type': object,
-                'application_start_date': object, 'issue_date': object, 'processing_time': object,
+                'application_start_date': object, 'issue_date': object, 'processing_time': np.int,
                 'street_number': object, 'street_direction': object, 'street_name': object, 'suffix': object,
                 'work_description': object,
                 'building_fee_paid': object, 'zoning_fee_paid': object, 'other_fee_paid': object,
@@ -71,19 +71,23 @@ def main():
         if row['reported_cost'] > 100000:
             for n in range(14):
                 contact_number = str(n + 1)
-                contact_type = row[f'contact_{contact_number}_type']
-                if contact_type == 'CONTRACTOR-GENERAL CONTRACTOR':
-                    name = row[f'contact_{contact_number}_name']
-                    if name not in unique_gen_contractors:
-                        unique_gen_contractors.add(name)
-                        line = {
-                            'name': name,
-                            'city': row[f'contact_{contact_number}_city'],
-                            'state': row[f'contact_{contact_number}_state'],
-                            'zip': row[f'contact_{contact_number}_zipcode'],
-                        }
-                        output_list.append(line)
-                        print(line)
+                con_type_key = f'contact_{contact_number}_type'
+                if con_type_key in row.keys():
+                    contact_type = row[con_type_key]
+                    if contact_type == 'CONTRACTOR-GENERAL CONTRACTOR':
+                        name = row[f'contact_{contact_number}_name']
+                        if name not in unique_gen_contractors:
+                            unique_gen_contractors.add(name)
+                            line = {
+                                'name': name,
+                                'city': row[f'contact_{contact_number}_city'],
+                                'state': row[f'contact_{contact_number}_state'],
+                                'zip': row[f'contact_{contact_number}_zipcode'],
+                            }
+                            output_list.append(line)
+                            print(line)
+                else:
+                    break
 
     output = pd.DataFrame(output_list)
     output.to_csv(output_file, index=False)
