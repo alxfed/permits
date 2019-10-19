@@ -6,9 +6,8 @@ from datetime import datetime
 
 
 def additional_column(row):
+    month = row['issue_date'].strftime("%b") # str
     general_contractor = ''
-    date = row['issue_date']  # str
-    # month = date.strftime(%b)
     for n in range(15):
         contact_number = str(n + 1)
         con_type_key = f'contact_{contact_number}_type'
@@ -18,7 +17,7 @@ def additional_column(row):
                 general_contractor = row[f'contact_{contact_number}_name']
         else:
             break
-    return general_contractor
+    return general_contractor, month
 
 
 def main():
@@ -44,12 +43,13 @@ def main():
     origin_file_path = '/media/alxfed/toca/presentation/all_new_permits.csv'
     output_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
 
-    origin = pd.read_csv(origin_file_path)
+    origin = pd.read_csv(origin_file_path, parse_dates=['application_start_date', 'issue_date'])
     origin = origin[origin['reported_cost'] > 100000]
     output = pd.DataFrame()
 
-    output['general_contractor'] = origin.apply(additional_column, axis=1)
+    output[['general_contractor', 'month']] = origin.apply(additional_column, axis=1)
     output[useful_columns] = origin[useful_columns]
+    # filter out the rows without a company
     output = output[output['general_contractor'] != '']
     output.to_csv(output_file_path, index=False)
     return
