@@ -2,11 +2,14 @@
 """Add contractor columns to new format of permits data
 """
 import pandas as pd
+from datetime import datetime
 
 
 def additional_column(row):
     general_contractor = ''
-    for n in range(14):
+    date = row['issue_date']  # str
+    # month = date.strftime(%b)
+    for n in range(15):
         contact_number = str(n + 1)
         con_type_key = f'contact_{contact_number}_type'
         if con_type_key in row.keys():
@@ -47,6 +50,7 @@ def main():
 
     output['general_contractor'] = origin.apply(additional_column, axis=1)
     output[useful_columns] = origin[useful_columns]
+    output = output[output['general_contractor'] != '']
     output.to_csv(output_file_path, index=False)
     return
 

@@ -29,14 +29,21 @@ def main():
     origin      = pd.read_csv(input_file_path)
     reference   = pd.read_csv(reference_file_path)
 
-    big_permits = origin[(origin['general_contractor'] != nan) &
-                         (origin['reported_cost'] > 100000) &
+    big_permits = origin[(origin['reported_cost'] > 100000) &
                          ((origin['permit_type'] == 'PERMIT - NEW CONSTRUCTION') |
-                          (origin['permit_type'] == 'PERMIT - RENOVATION/ALTERATION')
-                          )]
+                          (origin['permit_type'] == 'PERMIT - RENOVATION/ALTERATION'))]
 
-    grouped = origin['reported_cost'].groupby(origin['general_contractor']).sum()
-    print(grouped)
+    # grouped = pd.DataFrame()
+    # grouped[['general_contractor', 'total']] = big_permits['reported_cost'].groupby(big_permits['general_contractor']).sum()
+
+    sorted_big_permits = big_permits.sort_values(by=['general_contractor', 'issue_date'])
+    # output = sorted_big_permits.set_index('general_contractor')
+
+    pivot = sorted_big_permits.pivot_table(index=['general_contractor',
+                                                  pd.Grouper(key='issue_date', freq='M')],
+                                           values=['reported_cost'], aggfunc='sum')
+    pivot.to_csv('/media/alxfed/toca/presentation/pivot_by_gen_contractors.csv')
+    print('ok')
     return
 
 
