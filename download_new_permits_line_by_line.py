@@ -41,7 +41,7 @@ def main():
     """
     data = pd.DataFrame()
 
-    start_dt = dt.datetime(year=2018, month=12, day=1, hour=0, minute=0, second=0)
+    start_dt = dt.datetime(year=2019, month=10, day=1, hour=0, minute=0, second=0)
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
     end_dt = dt.datetime(year=2019, month=11, day=1, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
@@ -57,15 +57,15 @@ def main():
         new_chunk['issue_date'] = pd.to_datetime(new_chunk['issue_date'])
         new_chunk['application_start_date'] = pd.to_datetime(new_chunk['application_start_date'])
         new_chunk['reported_cost'] = pd.to_numeric(new_chunk['reported_cost'], downcast='unsigned')
-        data = data.append(new_chunk, sort=False, ignore_index = True)
+        big_permits = new_chunk[new_chunk['reported_cost'] > 100000]
+        data = data.append(big_permits, sort=False, ignore_index = True)
         if new_chunk.id.count() == limit:   # the number of items in the 'id' column which is never empty
             offset += limit
         else:
             data_to_read_left = False
-    big_permits = data[data['reported_cost'] > 100000]
-    big_new_const_and_renov = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
+    new_construction = data[data['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
     large_newconst = big_permits[big_permits['permit_type'] == 'PERMIT - NEW CONSTRUCTION']
-    large_newconst.to_csv('/media/alxfed/toca/presentation/since2018_large_newconst.csv', index=False)
+    large_newconst.to_csv('/media/alxfed/toca/presentation/october_2019_large_newconst.csv', index=False)
     large_newconst.to_json('/media/alxfed/toca/presentation/october_2019_large_newconst.jl', orient='records', lines=True)
     renovation = data[data['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']
     large_renow = big_permits[big_permits['permit_type'] == 'PERMIT - RENOVATION/ALTERATION']

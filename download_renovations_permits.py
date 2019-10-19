@@ -41,7 +41,7 @@ def main():
     """
     data = pd.DataFrame()
 
-    start_dt = dt.datetime(year=2019, month=10, day=1, hour=0, minute=0, second=0)
+    start_dt = dt.datetime(year=2018, month=10, day=1, hour=0, minute=0, second=0)
     start_str = start_dt.strftime('%Y-%m-%dT%H:%M:%S')
     end_dt = dt.datetime(year=2019, month=10, day=18, hour=0, minute=0, second=0)
     end_str = end_dt.strftime('%Y-%m-%dT%H:%M:%S')
@@ -64,8 +64,8 @@ def main():
             print('offset: ', offset)
         else:
             data_to_read_left = False
-    data.to_csv('/media/alxfed/toca/presentation/renovations.csv', index=False)
-    data.to_json('/media/alxfed/toca/presentation/renovations.jl', orient='records', lines=True)
+    data.to_csv('/media/alxfed/toca/presentation/other_renovations.csv', index=False)
+    data.to_json('/media/alxfed/toca/presentation/other_renovations.jl', orient='records', lines=True)
     return
 
 
