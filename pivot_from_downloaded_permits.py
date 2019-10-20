@@ -17,7 +17,7 @@ def additional_column(row):
                 general_contractor = row[f'contact_{contact_number}_name']
         else:
             break
-    return general_contractor, month
+    return pd.Series([general_contractor, month])
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
                       'work_description']
 
     origin_file_path = '/media/alxfed/toca/presentation/all_new_permits.csv'
-    output_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
+    output_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.csv'
 
     origin = pd.read_csv(origin_file_path, parse_dates=['application_start_date',
                                      'issue_date'])
