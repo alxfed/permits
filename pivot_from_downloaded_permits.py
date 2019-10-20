@@ -2,7 +2,7 @@
 """Add contractor columns to new format of permits data
 """
 import pandas as pd
-from datetime import datetime
+import numpy as np
 
 
 def additional_column(row):
@@ -21,24 +21,24 @@ def additional_column(row):
 
 
 def main():
-    useful_columns = ['reported_cost', 'permit_', 'permit_type', 'issue_date',
-                      'street_number', 'street_direction', 'street_name', 'suffix',
-                      'work_description']
-
-    origin_file_path = '/media/alxfed/toca/presentation/all_new_permits.csv'
+    origin_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
     output_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.csv'
+    output_excel_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.xlsx'
 
-    origin = pd.read_csv(origin_file_path, parse_dates=['application_start_date',
-                                     'issue_date'])
-    origin = origin[(origin['reported_cost'] > 100000) &
-                    ((origin['permit_type'] == 'PERMIT - NEW CONSTRUCTION') |
-                     (origin['permit_type'] == 'PERMIT - RENOVATION/ALTERATION'))]
+    useful_columns = ['general_contractor', 'reported_cost', 'permit_', 'permit_type', 'issue_date', 'month',
+                      'street_number', 'street_direction', 'street_name', 'suffix', 'work_description']
+
+    column_types = {'reported_cost': np.float, 'permit_': np.int, 'permit_type': object,
+                    'issue_date': object}
+
+    origin = pd.read_csv(origin_file_path, usecols=useful_columns, parse_dates=['issue_date'], dtype=column_types)
 
     output = pd.DataFrame()
-
-    output[['general_contractor', 'month']] = origin.apply(additional_column, axis=1)
-    output[useful_columns] = origin[useful_columns]
-    output = output[output['general_contractor'] != '']
+    output = origin.sort_values(by=['general_contractor', 'month'])
+    pivot = origin.pivot_table(index=['general_contractor', 'month'], values='reported_cost',
+                               aggfunc= [np.sum, np.mean])
+    pivot.to_excel(output_excel_file_path, sheet_name='Sheet 0', float_format="%.2f",
+                   merge_cells=True)
     output.to_csv(output_file_path, index=False)
     return
 
