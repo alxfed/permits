@@ -2,13 +2,14 @@
 """Add contractor columns to new format of permits data
 """
 import pandas as pd
+import numpy as np
 from datetime import datetime
 
 
 def additional_column(row):
     month = row['issue_date'].strftime("%b") # str
     general_contractor = ''
-    for n in range(15):
+    for n in range(14):
         contact_number = str(n + 1)
         con_type_key = f'contact_{contact_number}_type'
         if con_type_key in row.keys():
@@ -17,11 +18,11 @@ def additional_column(row):
                 general_contractor = row[f'contact_{contact_number}_name']
         else:
             break
-    return general_contractor, month
+    return pd.Series([general_contractor, month])
 
 
 def main():
-    useful_columns = ['id', 'permit_', 'permit_type', 'application_start_date', 'issue_date',
+    use_columns = ['id', 'permit_', 'permit_type', 'issue_date',
                       'street_number', 'street_direction', 'street_name', 'suffix',
                       'work_description',
                       'contact_1_type', 'contact_1_name', 'contact_1_city', 'contact_1_state', 'contact_1_zipcode',
@@ -40,15 +41,21 @@ def main():
                       'contact_13_type', 'contact_13_name', 'contact_13_city', 'contact_13_state', 'contact_13_zipcode',
                       'contact_14_type', 'contact_14_name', 'contact_14_city', 'contact_14_state', 'contact_14_zipcode']
 
+    column_types = {'id': np.int, 'permit_': np.int, 'permit_type': object, 'review_type': object,
+                    'issue_date': object, 'reported_cost': np.int}
+
     origin_file_path = '/media/alxfed/toca/presentation/all_new_permits.csv'
     output_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
 
-    origin = pd.read_csv(origin_file_path, parse_dates=['application_start_date', 'issue_date'])
-    origin = origin[origin['reported_cost'] > 100000]
+    origin = pd.read_csv(origin_file_path, usecols=use_columns, parse_dates=['issue_date'], dtype=column_types)
+    origin = origin[(origin['reported_cost'] > 100000) &
+                    ((origin['permit_type'] == 'PERMIT - NEW CONSTRUCTION') |
+                     (origin['permit_type'] == 'PERMIT - RENOVATION/ALTERATION'))]
+
     output = pd.DataFrame()
 
     output[['general_contractor', 'month']] = origin.apply(additional_column, axis=1)
-    output[useful_columns] = origin[useful_columns]
+    output[use_columns] = origin[use_columns]
     # filter out the rows without a company
     output = output[output['general_contractor'] != '']
     output.to_csv(output_file_path, index=False)
