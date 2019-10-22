@@ -24,7 +24,8 @@ def main():
     origin_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
     output_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.csv'
     output_excel_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.xlsx'
-    totalput_excel_file_path = '/media/alxfed/toca/presentation/total_pivot_new_permits.xlsx'
+    totalput_excel_file_path = '/media/alxfed/toca/presentation/total_pivot_permits.xlsx'
+    totalput_csv_file_path = '/media/alxfed/toca/presentation/total_pivot_permits.csv'
 
     useful_columns = ['general_contractor', 'reported_cost', 'permit_', 'permit_type', 'issue_date', 'month',
                       'street_number', 'street_direction', 'street_name', 'suffix', 'work_description']
@@ -39,6 +40,7 @@ def main():
     totals = origin.pivot_table(index=['general_contractor'], values='reported_cost', aggfunc=np.sum)
     totals.to_excel(totalput_excel_file_path, sheet_name='Sheet 0', float_format="%.2f",
                    merge_cells=True)
+    totals.to_csv(totalput_csv_file_path)
     pivot = origin.pivot_table(index=['general_contractor', 'month'], values='reported_cost',
                                aggfunc= [np.sum, np.mean])
     pivot.to_excel(output_excel_file_path, sheet_name='Sheet 0', float_format="%.2f",
