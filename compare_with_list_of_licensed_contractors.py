@@ -45,6 +45,7 @@ def main():
                                                  'secondary_insurance_expr'],
                                     date_parser=dateparse,
                                     dtype=object)
+
     output = pd.DataFrame()
     output['general_contractor'] = origin.apply(compare_with_licenses, axis=1, reference=gen_contractors)
 
