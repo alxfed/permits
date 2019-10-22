@@ -16,8 +16,16 @@ def dateparse(x):
 
 def compare_with_licenses(row, reference):
     general_contractor = row['general_contractor']
+    [one, two, three] = general_contractor.split(sep=' ', maxsplit=3)
     for index, name in reference.iterrows():
-        one, two, three, _ = general_contractor.split()
+        company_name = name['company_name']
+        [one_r, two_r, three_r] = company_name.split(sep=' ', maxsplit=3)
+        if one_r == one.upper():
+            if two_r == two.upper():
+                if three_r == three.upper():
+                    break
+        else:
+            pass
     return general_contractor
 
 
