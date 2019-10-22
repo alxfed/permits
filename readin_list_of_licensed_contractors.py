@@ -14,28 +14,8 @@ def dateparse(x):
         return pd.datetime.strptime(x, '%m/%d/%y') #  %H:%M:%S.%f if there are hours, minutes, seconts and milliseconds
 
 
-def compare_with_licenses(row, reference):
-    general_contractor = row['general_contractor']
-    for index, name in reference.iterrows():
-        one, two, three, _ = general_contractor.split()
-    return general_contractor
-
-
 def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
-    origin_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
-    output_file_path = '/home/alxfed/archive/verified_gen_contractors_new_permits.csv'
-    output_excel_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.xlsx'
-
-    useful_columns = ['general_contractor', 'reported_cost', 'permit_', 'permit_type', 'issue_date', 'month',
-                      'street_number', 'street_direction', 'street_name', 'suffix', 'work_description']
-
-    column_types = {'reported_cost': np.float, 'permit_': np.int, 'permit_type': object,
-                    'issue_date': object}
-
-    origin = pd.read_csv(origin_file_path, usecols=useful_columns,
-                                    parse_dates=['issue_date'],
-                                    dtype=column_types)
 
     gen_cont_file_path = '/home/alxfed/archive/licensed_general_contractors.csv'
 
@@ -45,9 +25,7 @@ def main():
                                                  'secondary_insurance_expr'],
                                     date_parser=dateparse,
                                     dtype=object)
-    output = pd.DataFrame()
-    output['general_contractor'] = origin.apply(compare_with_licenses, axis=1, reference = gen_contractors)
-
+    print('ok')
     return
 
 

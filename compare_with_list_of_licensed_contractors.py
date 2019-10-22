@@ -15,7 +15,10 @@ def dateparse(x):
 
 
 def compare_with_licenses(row, reference):
-    for index, name in reference.iterrows()
+    general_contractor = row['general_contractor']
+    for index, name in reference.iterrows():
+        one, two, three, _ = general_contractor.split()
+    return general_contractor
 
 
 def main():
@@ -42,7 +45,9 @@ def main():
                                                  'secondary_insurance_expr'],
                                     date_parser=dateparse,
                                     dtype=object)
-    print('ok')
+    output = pd.DataFrame()
+    output['general_contractor'] = origin.apply(compare_with_licenses, axis=1, reference=gen_contractors)
+
     return
 
 
