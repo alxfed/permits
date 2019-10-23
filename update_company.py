@@ -11,7 +11,7 @@ def main():
                   [
                     {
                       "name": "name",
-                      "value": "MBI Realty"
+                      "value": "MBI realty"
                     }
                   ]
                  }
