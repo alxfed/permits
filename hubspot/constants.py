@@ -11,6 +11,7 @@ header = {'Content-Type': 'application/json'}
 
 COMPANY_CREATE_URL  = 'https://api.hubapi.com/companies/v2/companies'
 COMPANY_DELETE_URL  = 'https://api.hubapi.com/companies/v2/companies/'
+COMPANY_UPDATE_URL  = 'https://api.hubapi.com/companies/v2/companies/'
 COMPANY_SEARCH_URL  = 'https://api.hubapi.com/companies/v2/domains/'
 COMPANIES_ALL_URL   = 'https://api.hubapi.com/companies/v2/companies/paged'
 
