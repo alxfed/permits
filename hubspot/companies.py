@@ -5,6 +5,20 @@ import requests
 from . import constants
 
 
+def update_company(companyId, parameters):
+    request_url = f'{constants.COMPANY_UPDATE_URL}{companyId}'
+    response = requests.request('PUT', url=request_url,
+                                headers=constants.header,
+                                json=parameters,
+                                params=constants.parameters)
+    if response.status_code == 200:
+        resp = response.json()
+        return resp
+    else:
+        print(response.status_code)
+        return
+
+
 def search_for_company_by_domain(domain, paramlist):
     payload = {
               "limit": 2,
@@ -16,7 +30,7 @@ def search_for_company_by_domain(domain, paramlist):
                 "companyId": 0
                 }
               }
-    request_url = f'{constants. COMPANY_SEARCH_URL}{domain}/companies'
+    request_url = f'{constants.COMPANY_SEARCH_URL}{domain}/companies'
     response = requests.request('POST', url=request_url,
                                 headers=constants.header,
                                 json=payload,
