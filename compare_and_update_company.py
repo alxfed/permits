@@ -31,7 +31,7 @@ def main():
             if first == license[:5]:
                 print('1. Company in the system: ', NAME, company['address'], '\n')
                 print('2. Company in the list:   ', license, '\n')
-                inputchar = input('y/n ? n')
+                inputchar = input('y/n ? ')
                 if inputchar == 'y':
                     print('this: ', license)
         pass
