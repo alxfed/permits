@@ -4,6 +4,7 @@
 import hubspot
 import pandas as pd
 import numpy as np
+import re
 
 
 def main():
@@ -24,9 +25,11 @@ def main():
 
     for indx, company in downl_companies.iterrows():
         NAME = company['name'].upper()
+        first = re.sub("[^a-zA-Z]+", "", NAME[:5])
         licenses = gen_contractors['company_name']
-        if NAME in licenses:
-            print('ok')
+        for license in licenses:
+            if first == license[:5]:
+                print('ok')
         pass
 
     companyId = '627118578'
