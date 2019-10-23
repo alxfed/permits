@@ -32,6 +32,7 @@ def compare_with_licenses(row, reference):
 def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
     origin_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
+    gen_cont_file_path = '/home/alxfed/archive/licensed_general_contractors.csv'
     output_file_path = '/home/alxfed/archive/verified_gen_contractors_new_permits.csv'
     output_excel_file_path = '/media/alxfed/toca/presentation/verified_gen_contractors_new_permits.xlsx'
 
@@ -44,8 +45,6 @@ def main():
     origin = pd.read_csv(origin_file_path, usecols=useful_columns,
                                     parse_dates=['issue_date'],
                                     dtype=column_types)
-
-    gen_cont_file_path = '/home/alxfed/archive/licensed_general_contractors.csv'
 
     gen_contractors = pd.read_csv(gen_cont_file_path,
                                     parse_dates=['license_expr',
