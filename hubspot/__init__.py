@@ -1,31 +1,13 @@
-# -*- coding: utf-8 -*-
-"""hubspot peculiarities
-"""
-import datetime
+__all__ = ['constants', 'companies', 'contacts', 'associations']
 
-
-def hstsnow():
-    hsts = int(1000*datetime.datetime.now().timestamp())
-    return hsts
-
-
-def datetime_fromhsts(hsts):
-    daytm = datetime.datetime.fromtimestamp(timestamp = hsts/1000)
-    return daytm
-
-
-def hsts_fromdatetime(datetm):
-    hsts = int(1000*datetm.timestamp())
-    return hsts
+from .constants import *
+from . import companies, contacts, associations
 
 
 def main():
-    hsts = hstsnow()
-    dt = datetime_fromhsts(hsts)
-    print(dt)
+    print('main in hubspot.__init__.py: ok')
     return
 
 
 if __name__ == '__main__':
     main()
-    print('main - done')

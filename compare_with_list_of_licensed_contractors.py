@@ -33,7 +33,7 @@ def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
     origin_file_path = '/media/alxfed/toca/presentation/gen_contractors_new_permits.csv'
     output_file_path = '/home/alxfed/archive/verified_gen_contractors_new_permits.csv'
-    output_excel_file_path = '/media/alxfed/toca/presentation/pivot_new_permits.xlsx'
+    output_excel_file_path = '/media/alxfed/toca/presentation/verified_gen_contractors_new_permits.xlsx'
 
     useful_columns = ['general_contractor', 'reported_cost', 'permit_', 'permit_type', 'issue_date', 'month',
                       'street_number', 'street_direction', 'street_name', 'suffix', 'work_description']
