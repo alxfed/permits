@@ -29,7 +29,11 @@ def main():
         licenses = gen_contractors['company_name']
         for license in licenses:
             if first == license[:5]:
-                print('ok')
+                print('1. Company in the system: ', NAME, company['address'], '\n')
+                print('2. Company in the list:   ', license, '\n')
+                inputchar = input('y/n ? n')
+                if inputchar == 'y':
+                    print('this: ', license)
         pass
 
     companyId = '627118578'
