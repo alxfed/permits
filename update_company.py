@@ -7,8 +7,7 @@ import csv
 
 def main():
     companyId = '627118578'
-    parameters = {
-        "properties":
+    parameters = {"properties":
                   [
                     {
                       "name": "name",
