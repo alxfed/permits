@@ -5,7 +5,7 @@ from os import environ
 
 
 api_key = environ['API_KEY']
-portal_id = environ['PORTAL_ID']
+# portal_id = environ['PORTAL_ID']
 parameters = {'hapikey': api_key}
 header = {'Content-Type': 'application/json'}
 
