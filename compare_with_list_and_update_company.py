@@ -40,30 +40,34 @@ def main():
             LICENSE = license['company_name'].upper()
             first_l = re.sub("[^a-zA-Z]+", "", LICENSE[:5])
             if first_c == first_l:
-                companyId = company['companyId']
-                parameters = {"properties":
-                    [
-                        {
-                            "name": "name",
-                            "value": license.title()
-                        },
-                        {
-                            "name": "category",
-                            "value": "General Contractor"
-                        }
-                    ]
-                }
-                if not (company['address'] == np.nan or license['address'] == np.nan):
-                    pass # company and license have some of the address
-                    # TODO: some of the other words coincide
-                    # TODO: zip code coincide
-                    # TODO: building number coincides
-                else:
-                    if ask_yn(company, license):
-                        result = hubspot.companies.update_company(companyId, parameters)
-                        print('updated the company')
+                [nam_one, nam_two, nam_three] = NAME.split('', max=3)
+                [lic_one, lic_two, lic_three] = LICENSE.split('', max=3)
+                if nam_one == lic_one and nam_two == lic_two:
+                    companyId = company['companyId']
+                    parameters = {"properties":
+                        [
+                            {
+                                "name": "name",
+                                "value": LICENSE.title()
+                            },
+                            {
+                                "name": "category",
+                                "value": "General Contractor"
+                            }
+                        ]
+                    }
+                    if not (company['address'] == np.nan or license['address'] == np.nan):
+                        print('no address')
+                        pass # company and license have some of the address
+                        # TODO: some of the other words coincide
+                        # TODO: zip code coincide
+                        # TODO: building number coincides
                     else:
-                        print('did not do anything')
+                        if ask_yn(company, license):
+                            result = hubspot.companies.update_company(companyId, parameters)
+                            print('updated the company')
+                        else:
+                            print('did not do anything')
             else:
                 pass # first letters don't coincide at all
     return
