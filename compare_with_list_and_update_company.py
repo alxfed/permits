@@ -58,8 +58,11 @@ def main():
                             ]
                         }
                         if not (company['address'] == np.nan or license['address'] == np.nan):
-                            print('both have addresses')
-                            print('ok')
+                            if ask_yn(company, license):
+                                result = hubspot.companies.update_company(companyId, parameters)
+                                print('updated the company')
+                            else:
+                                print('did not do anything')
                         else:
                             if ask_yn(company, license):
                                 result = hubspot.companies.update_company(companyId, parameters)
