@@ -60,9 +60,6 @@ def main():
                         if not (company['address'] == np.nan or license['address'] == np.nan):
                             print('both have addresses')
                             print('ok')
-                            pass # company and license have some of the address
-                            # TODO: zip code coincide
-                            # TODO: building number coincides
                         else:
                             if ask_yn(company, license):
                                 result = hubspot.companies.update_company(companyId, parameters)
