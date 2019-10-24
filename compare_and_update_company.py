@@ -25,10 +25,10 @@ def main():
 
     for indx, company in downl_companies.iterrows():
         NAME = company['name'].upper()
-        first = re.sub("[^a-zA-Z]+", "", NAME[:5])
+        first = re.sub("[^a-zA-Z]+", "", NAME[:10])
         licenses = gen_contractors['company_name']
         for license in licenses:
-            if first == license[:5]:
+            if first == license[:10]:
                 print('1. Company in the system: ', NAME, company['address'], '\n')
                 print('2. Company in the list:   ', license, '\n')
                 inputchar = input('y/n ? ')
@@ -38,7 +38,11 @@ def main():
                         [
                             {
                                 "name": "name",
-                                "value": license
+                                "value": license.title()
+                            },
+                            {
+                                "name": "category",
+                                "value": "General Contractor"
                             }
                         ]
                     }
