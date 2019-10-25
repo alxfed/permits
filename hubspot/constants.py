@@ -4,11 +4,17 @@
 from os import environ
 
 
-def hubspot_timestamp_from_date(date_param):
+def hubspot_timestamp_from_date(date_object):
     from datetime import datetime
-    date = datetime.fromisoformat(date_param)
+    date = datetime.fromisoformat(date_object)
     hubspot_timestamp = int(1000 * date.timestamp())
     return hubspot_timestamp
+
+
+def date_from_hubsport_timestamp(hubspot_timestamp):
+    from datetime import datetime
+    date_time = datetime.fromtimestamp(int(hubspot_timestamp/1000))
+    return date_time
 
 
 api_key = environ['API_KEY']
