@@ -4,6 +4,13 @@
 from os import environ
 
 
+def hubspot_timestamp_from_date(date_param):
+    from datetime import datetime
+    date = datetime.fromisoformat(date_param)
+    hubspot_timestamp = int(1000 * date.timestamp())
+    return hubspot_timestamp
+
+
 api_key = environ['API_KEY']
 # portal_id = environ['PORTAL_ID']
 parameters = {'hapikey': api_key}
@@ -20,3 +27,5 @@ CONTACTS_ALL_URL = 'https://api.hubapi.com/contacts/v1/lists/all/contacts/all'
 CONTACT_SEARCH_QUERY_URL = 'https://api.hubapi.com/contacts/v1/search/query?q='
 
 ASSOCIATIONS_URL    = 'https://api.hubapi.com/crm-associations/v1/associations'
+
+DEALS_ALL_URL       = 'https://api.hubapi.com/deals/v1/deal/paged'
