@@ -5,6 +5,28 @@ import requests
 from . import constants
 
 
+def create_company(parameters):
+    #
+    list_of_properties = []
+    for key in row:
+        prop = {"name": hubspot_mapping[key],
+                "value": row[key]}
+        list_of_properties.append(prop)
+    data['properties'] = list_of_properties
+    response = requests.request("POST", url=COMPANIES_URL, json=data,
+                                headers=headers, params=querystring)
+    if response.status_code == 200:
+        row.update({'companyId': response.json()['companyId']})
+        writeln(line_by_line_path, row_to_write=row)
+        output_rows.append(row)
+        indx += 1
+        print('ok', indx)
+    else:
+        print('not ok! ', response.status_code)
+
+    return
+
+
 def update_company(companyId, parameters):
     request_url = f'{constants.COMPANY_UPDATE_URL}{companyId}'
     response = requests.request('PUT', url=request_url,
