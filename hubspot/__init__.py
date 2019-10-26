@@ -1,7 +1,7 @@
 __all__ = ['constants', 'companies', 'contacts', 'associations']
 
 from .constants import *
-from . import companies, contacts, associations, deals
+from . import companies, contacts, associations, deals, engagements
 
 
 def main():
