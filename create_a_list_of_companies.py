@@ -30,30 +30,31 @@ def main():
                                   usecols=licenses_columns,
                                   dtype=object)
 
-    not_lic_file_path = '/home/alxfed/archive/not_licensed_contractors.csv'
+    lic_file_path = '/home/alxfed/archive/licensed_contractors_to_create.csv'
 
     seen = set()
-    not_there = set()
-    licensed = gen_contractors['company_name'].values
-    not_lic = []
+    real_names = set()
+    to_create = []
     for indx, contractor in contractors.iterrows():
         company = contractor['general_contractor']
         if company not in seen:
-            for co_name in licensed:
+            seen.add(company)
+            for ind, co_licensed in gen_contractors.iterrows():
+                co_name = co_licensed['company_name']
                 if co_name.startswith(company):
-                    seen.add(co_name)
-                    # and other wonderful things that have to be done
-                    pass
+                    if co_name not in real_names:
+                        real_names.add(co_name)
+                        to_create.append(dict(co_licensed))
+                        # and other wonderful things that have to be done
+                    break
                 else:
+                    # licenced company doesn't start like the permit company
                     pass
-        if company not in not_there:
-            not_there.add(company)
-            not_lic.append(company)
         else:
+            # company has been seen, do nothing
             pass
-
-    not_licensed = pd.DataFrame(not_lic)
-    not_licensed.to_csv(not_lic_file_path, index=False)
+    output = pd.DataFrame(to_create)
+    output.to_csv(lic_file_path, index=False)
     return
 
 
