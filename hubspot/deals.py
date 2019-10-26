@@ -57,9 +57,12 @@ def get_all_deals(request_parameters, include_associations):
             associations = '&includeAssociations=true'
         parameters_string = f'{authentication}{associations}{parameters_substring}&offset={offset}&limit={limit}'
         return parameters_string
-    # prepare for the (inevitable) output
+    # prepare for the inevitable output
     all_deals    = []
     output_columns  = ['dealId', 'isDeleted']
+    if include_associations:
+        assoc_columns = ['associatedVids', 'associatedTicketIds', 'associatedCompanyIds', 'associatedDealIds']
+        output_columns.extend(assoc_columns)
     output_columns.extend(request_parameters)
 
     # package the parameters into a substring
