@@ -8,7 +8,7 @@ from . import constants
 def create_engagement(parameters):
 
     data = {"engagement": {
-                    "active": true,
+                    "active": 'true',
                     "ownerId": 1,
                     "type": "NOTE",
                     "timestamp": 1409172644778
