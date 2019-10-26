@@ -73,10 +73,10 @@ def get_all_deals(request_parameters, include_associations):
                 if include_associations:
                     de_associations = deal['associations']
                     # 'associatedVids', 'associatedCompanyIds', 'associatedDealIds', 'associatedTicketIds'
-                    row.update({'associatedVids'        : ' '.join(de_associations['associatedVids']),
-                                'associatedCompanyIds'  : ' '.join(de_associations['associatedCompanyIds']),
-                                'associatedDealIds'     : ' '.join(de_associations['associatedDealIds']),
-                                'associatedTicketIds'   : ' '.join(de_associations['associatedTicketIds'])
+                    row.update({'associatedVids'        : ' '.join(map(str, de_associations['associatedVids'])),
+                                'associatedCompanyIds'  : ' '.join(map(str, de_associations['associatedCompanyIds'])),
+                                'associatedDealIds'     : ' '.join(map(str, de_associations['associatedDealIds'])),
+                                'associatedTicketIds'   : ' '.join(map(str, de_associations['associatedTicketIds']))
                                 })
                 de_properties = deal['properties']
                 for de_property in de_properties:
