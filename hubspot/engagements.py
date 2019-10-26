@@ -6,7 +6,6 @@ from . import constants
 
 
 def create_engagement(parameters):
-
     data = {"engagement": {
                     "active": 'true',
                     "ownerId": 1,

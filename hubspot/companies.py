@@ -6,12 +6,11 @@ from . import constants
 
 
 def create_company(parameters):
-    #
     data = {"properties": []}
     list_of_properties = []
-    for key in row:
-        prop = {"name": hubspot_mapping[key],
-                "value": row[key]}
+    for parameter in parameters:
+        prop = {"name" : parameter.key,
+                "value": parameter.value}
         list_of_properties.append(prop)
     data['properties'] = list_of_properties
     response = requests.request("POST", url=COMPANIES_URL, json=data,
