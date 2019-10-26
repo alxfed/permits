@@ -33,18 +33,25 @@ def main():
     not_lic_file_path = '/home/alxfed/archive/not_licensed_contractors.csv'
 
     seen = set()
+    not_there = set()
+    licensed = gen_contractors['company_name'].values
     not_lic = []
     for indx, contractor in contractors.iterrows():
         company = contractor['general_contractor']
         if company not in seen:
-            licensed = gen_contractors['company_name'].values
-            if company in licensed:
-                seen.add(company)
-                pass
-            else:
-                not_lic.append(company)
+            for co_name in licensed:
+                if co_name.startswith(company):
+                    seen.add(co_name)
+                    # and other wonderful things that have to be done
+                    pass
+                else:
+                    pass
+        if company not in not_there:
+            not_there.add(company)
+            not_lic.append(company)
         else:
             pass
+
     not_licensed = pd.DataFrame(not_lic)
     not_licensed.to_csv(not_lic_file_path, index=False)
     return

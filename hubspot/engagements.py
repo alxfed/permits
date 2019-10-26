@@ -24,7 +24,7 @@ def create_engagement(parameters):
                     }
                 ],
                 "metadata": {
-                    "body": "note body"
+                    "body": ""
                 }
             }
     list_of_properties = []
