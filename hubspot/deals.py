@@ -19,30 +19,6 @@ def update_deal(companyId, parameters):
         return
 
 
-def search_for_deal_by_domain(domain, paramlist):
-    payload = {
-              "limit": 2,
-              "requestOptions": {
-                "properties": paramlist
-                },
-              "offset": {
-                "isPrimary": True,
-                "companyId": 0
-                }
-              }
-    request_url = f'{constants.COMPANY_SEARCH_URL}{domain}/companies'
-    response = requests.request('POST', url=request_url,
-                                headers=constants.header,
-                                json=payload,
-                                params=constants.parameters)
-    if response.status_code == 200:
-        resp = response.json()
-        return resp
-    else:
-        print(response.status_code)
-        return
-
-
 def get_all_deals(request_parameters, include_associations):
     """Downloads the complete list of companies from the portal
     :param request_parameters: list of Contact parameters
@@ -116,6 +92,7 @@ def get_all_deals(request_parameters, include_associations):
 
 
 def main():
+    print('You have launched this module as main')
     return
 
 
