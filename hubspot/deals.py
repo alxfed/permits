@@ -43,16 +43,19 @@ def search_for_deal_by_domain(domain, paramlist):
         return
 
 
-def get_all_deals(request_parameters):
+def get_all_deals(request_parameters, include_associations):
     """Downloads the complete list of companies from the portal
     :param request_parameters: list of Contact parameters
     :return all_companies: list of dictionaries / CDR
     :return output_columns: list of output column names
     """
-    def make_parameters_string(parameters_substring, offset, limit):
+    # includeAssociations=true
+    def make_parameters_string(include_associations, parameters_substring, offset, limit):
         authentication = 'hapikey=' + constants.api_key
-        parameters_string = f'{authentication}{parameters_substring} \
-                                &offset={offset}&limit={limit}'
+        associations = ''
+        if include_associations:
+            associations = '&includeAssociations=true'
+        parameters_string = f'{authentication}{associations}{parameters_substring}&offset={offset}&limit={limit}'
         return parameters_string
     # prepare for the (inevitable) output
     all_deals    = []
@@ -67,12 +70,15 @@ def get_all_deals(request_parameters):
     # prepare for the pagination
     has_more = True
     offset = 0
-    limit = 2  # max 250
+    limit = 250  # max 250
 
     # Now the main cycle
     while has_more:
         api_url = '{}?{}'.format(constants.DEALS_ALL_URL,
-                                 make_parameters_string(param_substring, offset, limit))
+                                 make_parameters_string(include_associations,
+                                                        param_substring,
+                                                        offset, limit)
+                                 )
         response = requests.request("GET", url=api_url, headers=constants.header)
         if response.status_code == 200:
             res = response.json()
@@ -81,8 +87,17 @@ def get_all_deals(request_parameters):
             deals       = res['deals']
             for deal in deals:
                 row = {}
-                row.update({"dealId": deal["dealId"],
-                            "isDeleted": deal["isDeleted"]})
+                row.update({"dealId"    : deal["dealId"],
+                            "isDeleted" : deal["isDeleted"]
+                            })
+                if include_associations:
+                    de_associations = deal['associations']
+                    # 'associatedVids', 'associatedCompanyIds', 'associatedDealIds', 'associatedTicketIds'
+                    row.update({'associatedVids'        : de_associations['associatedVids'],
+                                'associatedCompanyIds'  : de_associations['associatedCompanyIds'],
+                                'associatedDealIds'     : de_associations['associatedDealIds'],
+                                'associatedTicketIds'   : de_associations['associatedTicketIds']
+                                })
                 de_properties = deal['properties']
                 for de_property in de_properties:
                     if de_property not in output_columns:

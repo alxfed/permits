@@ -18,7 +18,8 @@ def main():
                              '874023': 'Company / Contacts contacted'}
     DOWNLOADED_DEALS_FILE_PATH = '/home/alxfed/archive/deals_downloaded.csv'
     request_params = ['dealname', 'closedate', 'amount', 'dealstage']
-    all_deals_cdr, all_columns = hubspot.deals.get_all_deals(request_params)
+    include_associations = True
+    all_deals_cdr, all_columns = hubspot.deals.get_all_deals(request_params, include_associations)
     with open(DOWNLOADED_DEALS_FILE_PATH, 'w') as f:
         f_csv = csv.DictWriter(f, fieldnames=all_columns)
         f_csv.writeheader()
