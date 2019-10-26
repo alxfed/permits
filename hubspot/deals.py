@@ -46,6 +46,7 @@ def search_for_deal_by_domain(domain, paramlist):
 def get_all_deals(request_parameters, include_associations):
     """Downloads the complete list of companies from the portal
     :param request_parameters: list of Contact parameters
+    :param include_associations: boolean
     :return all_companies: list of dictionaries / CDR
     :return output_columns: list of output column names
     """
