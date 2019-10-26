@@ -7,6 +7,7 @@ from . import constants
 
 def create_company(parameters):
     #
+    data = {"properties": []}
     list_of_properties = []
     for key in row:
         prop = {"name": hubspot_mapping[key],
@@ -14,7 +15,7 @@ def create_company(parameters):
         list_of_properties.append(prop)
     data['properties'] = list_of_properties
     response = requests.request("POST", url=COMPANIES_URL, json=data,
-                                headers=headers, params=querystring)
+                                headers=constants.header, params=constants.parameters)
     if response.status_code == 200:
         row.update({'companyId': response.json()['companyId']})
         writeln(line_by_line_path, row_to_write=row)
