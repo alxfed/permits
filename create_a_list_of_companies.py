@@ -45,6 +45,7 @@ def main():
                     if co_name not in real_names:
                         real_names.add(co_name)
                         to_create.append(dict(co_licensed))
+                        print('New name: ', co_name)
                         # and other wonderful things that have to be done
                     break
                 else:
