@@ -51,11 +51,11 @@ def compare_with_licenses_and_state(row, present, reference):
 
 def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
-    origin_file_path                = '/home/alxfed/archive/general_contractors_doing_new_construction_and_their_permits.csv'
+    origin_file_path                = '/home/alxfed/archive/general_contractors_doing_renovations_and_their_permits.csv'
     present_state_file_path         = '/home/alxfed/archive/companies_downloaded.csv'
     general_contractors_file_path   = '/home/alxfed/archive/licensed_general_contractors.csv'
-    output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_nc_permits.csv'
-    unlicensed_file_path            = '/home/alxfed/archive/unlicensed_contractors_in_nc_permits.csv'
+    output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_ra_permits.csv'
+    unlicensed_file_path            = '/home/alxfed/archive/unlicensed_contractors_in_ra_permits.csv'
 
     origin      = pd.read_csv(origin_file_path, dtype=object)
     input_perm = origin.drop_duplicates(subset=['general_contractor'], keep='first', inplace=False)
@@ -79,13 +79,15 @@ def main():
     # out[['company_name', 'address', 'phone']] = input_perm.apply(compare_with_state_and_licenses, axis=1,
     #  present=present_st, reference=licensed)
     out = pd.DataFrame(out)
-    output = out[(out['name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
-    output = output.drop_duplicates(subset=['name'], keep='first', inplace=False)
-    output.to_csv(output_file_path, index=False)
+    if not out.empty:
+        output = out[(out['name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
+        output = output.drop_duplicates(subset=['name'], keep='first', inplace=False)
+        output.to_csv(output_file_path, index=False)
 
     unlicensed = pd.DataFrame(unlicen)
-    unlicensed = unlicensed.drop_duplicates(subset=['name'], keep='first', inplace=False)
-    unlicensed.to_csv(unlicensed_file_path, index=False)
+    if not unlicensed.empty:
+        unlicensed = unlicensed.drop_duplicates(subset=['name'], keep='first', inplace=False)
+        unlicensed.to_csv(unlicensed_file_path, index=False)
     return
 
 
