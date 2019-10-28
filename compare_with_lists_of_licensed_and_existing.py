@@ -79,12 +79,12 @@ def main():
     # out[['company_name', 'address', 'phone']] = input_perm.apply(compare_with_state_and_licenses, axis=1,
     #  present=present_st, reference=licensed)
     out = pd.DataFrame(out)
-    output = out[(out['company_name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
-    output = output.drop_duplicates(subset=['company_name'], keep='first', inplace=False)
+    output = out[(out['name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
+    output = output.drop_duplicates(subset=['name'], keep='first', inplace=False)
     output.to_csv(output_file_path, index=False)
 
     unlicensed = pd.DataFrame(unlicen)
-    unlicensed = unlicensed.drop_duplicates(subset=['company_name'], keep='first', inplace=False)
+    unlicensed = unlicensed.drop_duplicates(subset=['name'], keep='first', inplace=False)
     unlicensed.to_csv(unlicensed_file_path, index=False)
     return
 
