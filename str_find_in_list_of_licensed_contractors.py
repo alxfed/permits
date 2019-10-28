@@ -21,6 +21,7 @@ def compare_with_state_and_licenses(row, present, reference):
     found = reference[reference['company_name'].str.find(sub=one) != -1]
     if found.empty:
         print('Found no licenses for  ', general_contractor, '\n')
+        print('Adding it to the unlicensed file \n \n')
     else:
         for index, refer in found.iterrows():
             company_name = refer['company_name']
@@ -28,6 +29,7 @@ def compare_with_state_and_licenses(row, present, reference):
                 # which means that company_name has license and the address and phone are in the refer row
                 # time to check it against the companies in the system
                 # one_co, sep, two_co = company_name.partition(' ')
+                present['name'] = present['name'].str.upper()
                 exist = present[present['name'].str.find(sub=one) != -1]
                 if not exist.empty:
                     # something found, let's make sure that it is it
@@ -63,10 +65,10 @@ def compare_with_state_and_licenses(row, present, reference):
 
 def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
-    origin_file_path                = '/home/alxfed/archive/gen_contractors_new_permits.csv'
+    origin_file_path                = '/home/alxfed/archive/general_contractors_doing_renovations_and_their_permits.csv'
     present_state_file_path         = '/home/alxfed/archive/companies_downloaded.csv'
     general_contractors_file_path   = '/home/alxfed/archive/licensed_general_contractors.csv'
-    output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_permits.csv'
+    output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_ra_permits.csv'
 
 
     origin      = pd.read_csv(origin_file_path, dtype=object)
