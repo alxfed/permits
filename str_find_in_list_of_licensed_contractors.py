@@ -11,7 +11,7 @@ def is_not_in_this_dataframe_column(term, column, dataframe):
     return what_is
 
 
-def compare_with_state_and_licenses(row, present, reference, unlicensed):
+def compare_with_state_and_licenses(row, present, reference):
     company_name = ''
     address = ''
     phone = ''
@@ -22,7 +22,7 @@ def compare_with_state_and_licenses(row, present, reference, unlicensed):
     if found.empty:
         print('\n\nFound no licenses for  ', general_contractor)
         print('Adding it to the unlicensed DataFrame \n \n')
-        unlicensed.append(row, ignore_index=True)
+        # unlicensed.append(row, ignore_index=True)
     else:
         for index, refer in found.iterrows():
             company_name = refer['company_name']
@@ -82,13 +82,14 @@ def main():
     # prepare for the output
     out = pd.DataFrame()
     out[['company_name', 'address', 'phone']] = input_perm.apply(compare_with_state_and_licenses, axis=1,
-                                                                 present=present_st, reference=licensed,
-                                                                 unlicensed=unlicensed)
+                                                                 present=present_st, reference=licensed)
+    # for index, permit_holder in input_perm.iterrows():
+
     #output
     output = out[(out['company_name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
     output.to_csv(output_file_path, index=False)
 
-    unlicensed.to_csv(unlicensed_file_path, index=False)
+    # unlicensed.to_csv(unlicensed_file_path, index=False)
     return
 
 
