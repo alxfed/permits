@@ -25,7 +25,7 @@ def compare_with_licenses_and_state(row, present, reference):
             company_name = refer['company_name']
             if company_name.startswith(general_contractor):
                 # which means that company_name has license and the address and phone are in the refer row
-                found_to_add = {'name': company_name,
+                found_to_add = {'name': company_name.title(),
                                 'address': str(refer['address']).replace(u'\xa0', u' '),
                                 'phone': refer['phone'].replace('x', ''),
                                 'category': "General Contractor"}
