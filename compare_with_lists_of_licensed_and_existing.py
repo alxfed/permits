@@ -18,7 +18,7 @@ def compare_with_licenses_and_state(row, present, reference):
     found = reference[reference['company_name'].str.find(sub=one) != -1]
     if found.empty:
         print('\n\nFound no licenses for  ', general_contractor, '\n\n')
-        unlicensed = {'company_name': general_contractor, 'address': '', 'phone': ''}
+        unlicensed = {'company_name': general_contractor, 'address': '', 'phone': '', 'category': "General Contractor"}
         return found_to_add, unlicensed
     else:
         for index, refer in found.iterrows():
@@ -27,11 +27,12 @@ def compare_with_licenses_and_state(row, present, reference):
                 # which means that company_name has license and the address and phone are in the refer row
                 found_to_add = {'company_name': company_name,
                                 'address': str(refer['address']).replace(u'\xa0', u' '),
-                                'phone': refer['phone'].replace('x', '')}
+                                'phone': refer['phone'].replace('x', ''),
+                                'category': "General Contractor"}
                 unlicensed = {}
                 break
             else:
-                unlicensed = {'company_name': general_contractor, 'address': '', 'phone': ''}
+                unlicensed = {'company_name': general_contractor, 'address': '', 'phone': '', 'category': "General Contractor"}
                 return found_to_add, unlicensed
 
     exist = present[present['name'].str.find(sub=one) != -1]
