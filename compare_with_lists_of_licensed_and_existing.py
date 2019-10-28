@@ -40,7 +40,7 @@ def compare_with_licenses_and_state(row, present, reference):
         for ind, existing in exist.iterrows():
             existing_co_name = existing['name']
             if company_name.startswith(existing_co_name):
-                print('Yeah, the licensed contractor ',
+                print('The licensed contractor ',
                       company_name, '  exists, and it is already in the system\n')
                 found_to_add = {}
                 return found_to_add, unlicensed
