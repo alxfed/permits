@@ -5,15 +5,13 @@ import pandas as pd
 import numpy as np
 from numpy import nan
 
-unlicensed = pd.DataFrame()
-
 
 def is_not_in_this_dataframe_column(term, column, dataframe):
     what_is = 'this is what is in this column'
     return what_is
 
 
-def compare_with_state_and_licenses(row, present, reference):
+def compare_with_state_and_licenses(row, present, reference, unlicensed):
     company_name = ''
     address = ''
     phone = ''
@@ -74,6 +72,7 @@ def main():
     output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_ra_permits.csv'
     unlicensed_file_path            = '/home/alxfed/archive/unlicensed_contractors_in_ra_permits.csv'
 
+    unlicensed = pd.DataFrame()
 
     origin      = pd.read_csv(origin_file_path, dtype=object)
     input_perm = origin.drop_duplicates(subset=['general_contractor'], keep='first', inplace=False)
@@ -83,7 +82,8 @@ def main():
     # prepare for the output
     out = pd.DataFrame()
     out[['company_name', 'address', 'phone']] = input_perm.apply(compare_with_state_and_licenses, axis=1,
-                                                                present=present_st, reference=licensed)
+                                                                 present=present_st, reference=licensed,
+                                                                 unlicensed=unlicensed)
     #output
     output = out[(out['company_name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
     output.to_csv(output_file_path, index=False)
