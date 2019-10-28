@@ -27,7 +27,7 @@ def compare_with_licenses_and_state(row, present, reference):
                 # which means that company_name has license and the address and phone are in the refer row
                 found_to_add = {'company_name': company_name,
                                 'address': str(refer['address']).replace(u'\xa0', u' '),
-                                'phone': refer['phone']}
+                                'phone': refer['phone'].replace('x', '')}
                 unlicensed = {}
                 break
             else:
