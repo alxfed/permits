@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 from numpy import nan
 
+unlicensed = pd.DataFrame()
+
 
 def is_not_in_this_dataframe_column(term, column, dataframe):
     what_is = 'this is what is in this column'
@@ -20,8 +22,9 @@ def compare_with_state_and_licenses(row, present, reference):
     one, sep, two = general_contractor.partition(' ')
     found = reference[reference['company_name'].str.find(sub=one) != -1]
     if found.empty:
-        print('Found no licenses for  ', general_contractor, '\n')
-        print('Adding it to the unlicensed file \n \n')
+        print('\n\nFound no licenses for  ', general_contractor)
+        print('Adding it to the unlicensed DataFrame \n \n')
+        unlicensed.append(row, ignore_index=True)
     else:
         for index, refer in found.iterrows():
             company_name = refer['company_name']
@@ -37,7 +40,7 @@ def compare_with_state_and_licenses(row, present, reference):
                         existing_co_name = existing['name']
                         if company_name.startswith(existing_co_name):
                             print('Yeah, the licensed contractor ',
-                                  company_name, '  exists, and it is already in the system')
+                                  company_name, '  exists, and it is already in the system\n')
                             do_not_add = True
                         else:
                             # print('The licensed contractor ', company_name,
@@ -69,6 +72,7 @@ def main():
     present_state_file_path         = '/home/alxfed/archive/companies_downloaded.csv'
     general_contractors_file_path   = '/home/alxfed/archive/licensed_general_contractors.csv'
     output_file_path                = '/home/alxfed/archive/new_licensed_contractors_for_ra_permits.csv'
+    unlicensed_file_path            = '/home/alxfed/archive/unlicensed_contractors_in_ra_permits.csv'
 
 
     origin      = pd.read_csv(origin_file_path, dtype=object)
@@ -83,6 +87,8 @@ def main():
     #output
     output = out[(out['company_name'] != '') & (out['address'] != '') & (out['address'] != np.nan)]
     output.to_csv(output_file_path, index=False)
+
+    unlicensed.to_csv(unlicensed_file_path, index=False)
     return
 
 
