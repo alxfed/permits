@@ -2,20 +2,26 @@
 """...
 """
 import pandas as pd
+import numpy as np
+import string
 
 
 def work_on_rows(row, ref, sta):
-    d = row['A']
-    e = ref['B'][2]
-    f = sta['C'][0]
-    c = {'a': 2}
+    d = ''; e = ''; f = ''
+    if row['name'] in ref['name'].values:
+        d = row['name']
+    if row['address'] in sta['name'].values:
+        e = sta['address']
+    if row['phone'] in sta['phone'].values:
+        f = row['phone']
     return pd.Series([d, e, f])
 
 
 def main():
-    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=list('ABC'))
-    reference = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=list('ABC'))
-    state = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=list('ABC'))
+    lett = list(string.ascii_lowercase)
+    df = pd.DataFrame(np.random.choice(lett, size=(3, 3)), columns=['name', 'address', 'phone'])
+    reference = pd.DataFrame(np.random.choice(lett, size=(10, 3)), columns=['name', 'address', 'phone'])
+    state = pd.DataFrame(np.random.choice(lett, size=(30, 3)), columns=['name', 'address', 'phone'])
 
     out = pd.DataFrame()
 
