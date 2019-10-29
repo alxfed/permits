@@ -20,7 +20,8 @@ def main():
     associations= {
         'associatedCompanyIds': [],
         'associatedVids': [],
-        'associatedDealIds': []
+        'associatedDealIds': [],
+        'associatedTicketIds': []
     }
     comp_Id_list = associations["associatedCompanyIds"]
     cont_Id_list = associations["associatedVids"]

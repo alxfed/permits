@@ -19,7 +19,7 @@ def main():
     DOWNLOADED_DEALS_FILE_PATH = '/home/alxfed/archive/deals_downloaded.csv'
     request_params = ['dealname', 'closedate', 'amount', 'pipeline', 'dealstage',
                       'permit_issue_date', 'permit_', 'permit', 'permit_type',
-                      'work_description']
+                      'work_descrption']
     # my pipeline is 815585 , stage 815586
     include_associations = True
     all_deals_cdr, all_columns = hubspot.deals.get_all_deals(request_params, include_associations)
