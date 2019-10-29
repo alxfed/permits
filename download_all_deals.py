@@ -17,7 +17,9 @@ def main():
                              'bd8039e1-8b13-4840-a5cb-95c9aff3067c': 'Received layout - Make quote',
                              '874023': 'Company / Contacts contacted'}
     DOWNLOADED_DEALS_FILE_PATH = '/home/alxfed/archive/deals_downloaded.csv'
-    request_params = ['dealname', 'closedate', 'amount', 'pipeline', 'dealstage']
+    request_params = ['dealname', 'closedate', 'amount', 'pipeline', 'dealstage',
+                      'permit_issue_date', 'permit_', 'permit',
+                      'permit_type', 'permit_issue_date']
     # my pipeline is 815585 , stage 815586
     include_associations = True
     all_deals_cdr, all_columns = hubspot.deals.get_all_deals(request_params, include_associations)

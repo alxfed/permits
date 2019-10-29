@@ -5,6 +5,13 @@ import requests
 from . import constants
 
 
+def create_a_deal(parameters, **associations):
+    comp_Id_list = associations["associatedCompanyIds"]
+    cont_Id_list = associations["associatedVids"]
+    deal_Id_list = associations["associatedDealIds"]
+    return
+
+''' template from the companies module
 def update_deal(companyId, parameters):
     request_url = f'{constants.COMPANY_UPDATE_URL}{companyId}'
     response = requests.request('PUT', url=request_url,
@@ -17,13 +24,13 @@ def update_deal(companyId, parameters):
     else:
         print(response.status_code)
         return
-
+'''
 
 def get_all_deals(request_parameters, include_associations):
-    """Downloads the complete list of companies from the portal
-    :param request_parameters: list of Contact parameters
+    """Downloads the complete list of deals from the portal
+    :param request_parameters: list of Deal parameters
     :param include_associations: boolean
-    :return all_companies: list of dictionaries / CDR
+    :return all_deals: list of dictionaries / CDR
     :return output_columns: list of output column names
     """
     # includeAssociations=true
