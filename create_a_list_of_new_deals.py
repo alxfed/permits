@@ -23,9 +23,6 @@ def main():
         'associatedDealIds': [],
         'associatedTicketIds': []
     }
-    comp_Id_list = associations["associatedCompanyIds"]
-    cont_Id_list = associations["associatedVids"]
-    deal_Id_list = associations["associatedDealIds"]
 
     companies_file_path = '/home/alxfed/archive/general_contractors_doing_renovations_and_their_permits.csv'
     companies_columns = ['general_contractor', 'id']

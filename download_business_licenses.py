@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""...
+"""https://dev.socrata.com/foundry/data.cityofchicago.org/r5kz-chrr
 """
 import datetime as dt
 import requests
