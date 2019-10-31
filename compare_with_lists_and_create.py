@@ -63,6 +63,7 @@ def main():
     for index, this_permit in input_perm.iterrows():
         to_add, not_to_add = compare_with_companies_and_state(this_permit, present_state, companies)
         if to_add:
+            # modDfObj = dfObj.append(pd.Series(['Raju', 21, 'Bangalore', 'India'], index=dfObj.columns ), ignore_index=True)
             out.append(to_add)
         if not_to_add:
             not_crtd.append(not_to_add)
