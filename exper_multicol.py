@@ -20,12 +20,13 @@ def work_on_rows(row, ref, sta):
 def main():
     lett = list(string.ascii_lowercase)
     df = pd.DataFrame(np.random.choice(lett, size=(3, 3)), columns=['name', 'address', 'phone'])
-    reference = pd.DataFrame(np.random.choice(lett, size=(10, 3)), columns=['name', 'address', 'phone'])
-    state = pd.DataFrame(np.random.choice(lett, size=(30, 3)), columns=['name', 'address', 'phone'])
+    reference = pd.DataFrame(np.random.choice(lett, size=(4, 3)), columns=['name', 'address', 'phone'])
+    state = pd.DataFrame(np.random.choice(lett, size=(5, 3)), columns=['name', 'address', 'phone'])
 
     out = pd.DataFrame()
-
-    out[['D', 'E', 'F']] = df.apply(work_on_rows, axis=1, ref=reference, sta=state)
+    out = df.append(reference, ignore_index=True)
+    df.append(state)
+    #out[['D', 'E', 'F']] = df.apply(work_on_rows, axis=1, ref=reference, sta=state)
     print(out)
     return
 

@@ -10,21 +10,18 @@ def compare_with_companies_and_state(row, present, reference):
     # reference - existing companies
     # present - existing deals
     # row - permit
-    to_add = {}
-    not_to_add = {}
+    to_add = pd.Series()
+    not_to_add = pd.Series()
     this_permit_number = row['permit_']
     numbers_in_existing_deals = present['permit_'].values
     if this_permit_number not in numbers_in_existing_deals:
         found = reference[reference['name'].str.find(sub=row['general_contractor']) != -1]
         if found.empty:
-            # TODO: add to not_to_add
-            print('ok')
+            not_to_add = row
             pass
         else:
-            companyId = found['companyId'].values[0]
-            # TODO: create a deal and associate it with this companyId
-            # TODO: if success - add to to_add
-            # TODO: if not success - add to not_to_add
+            to_add['companyId'] = found['companyId'].values[0]
+            to_add = to_add.append(row)
             pass
     return to_add, not_to_add
 
@@ -57,23 +54,19 @@ def main():
     companies['name'] = companies['name'].str.upper()
 
     # prepare for the output
-    out = []
-    not_crtd = []
+    output = pd.DataFrame()
+    not_created = pd.DataFrame()
 
     for index, this_permit in input_perm.iterrows():
         to_add, not_to_add = compare_with_companies_and_state(this_permit, present_state, companies)
-        if to_add:
-            # modDfObj = dfObj.append(pd.Series(['Raju', 21, 'Bangalore', 'India'], index=dfObj.columns ), ignore_index=True)
-            out.append(to_add)
-        if not_to_add:
-            not_crtd.append(not_to_add)
+        if to_add.empty:
+            not_created = not_created.append(not_to_add, ignore_index = False)
+        elif not_to_add.empty:
+            output = output.append(to_add, ignore_index=True)
 
     # output
-    output = pd.DataFrame(out)
     if not output.empty:
         output.to_csv(output_file_path, index=False)
-
-    not_created = pd.DataFrame(not_crtd)
     if not not_created.empty:
         not_created.to_csv(not_created_file_path, index=False)
     return
