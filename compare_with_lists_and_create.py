@@ -18,11 +18,15 @@ def compare_with_companies_and_state(row, present, reference):
         found = reference[reference['name'].str.find(sub=row['general_contractor']) != -1]
         if found.empty:
             not_to_add = row
+            print('Did not find ', row['general_contractor'], ' in the list of companies')
+            print('Adding it to the not create file \n')
             pass
         else:
             to_add['companyId'] = found['companyId'].values[0]
             to_add = to_add.append(row)
             pass
+    else:
+        print('Permit ', this_permit_number, ' is in existing deals')
     return to_add, not_to_add
 
 
@@ -45,8 +49,8 @@ def main():
                                        'permit_issue_date', 'permit_', 'permit', 'permit_type',
                                        'work_descrption']
     general_contractors_file_path   = '/home/alxfed/archive/licensed_general_contractors.csv'
-    output_file_path                = '/home/alxfed/archive/created_deals_for_ra_permits.csv'
-    not_created_file_path           = '/home/alxfed/archive/not_created_deals_in_ra_permits.csv'
+    output_file_path                = '/home/alxfed/archive/deals_to_create_for_ra_permits.csv'
+    not_to_create_file_path           = '/home/alxfed/archive/deals_not_to_create_in_ra_permits.csv'
 
     input_perm      = pd.read_csv(origin_file_path, dtype=object)
     present_state  = pd.read_csv(present_state_file_path, dtype=object)
@@ -55,20 +59,20 @@ def main():
 
     # prepare for the output
     output = pd.DataFrame()
-    not_created = pd.DataFrame()
+    not_to_create = pd.DataFrame()
 
     for index, this_permit in input_perm.iterrows():
         to_add, not_to_add = compare_with_companies_and_state(this_permit, present_state, companies)
         if to_add.empty:
-            not_created = not_created.append(not_to_add, ignore_index = False)
+            not_to_create = not_to_create.append(not_to_add, ignore_index = False)
         elif not_to_add.empty:
             output = output.append(to_add, ignore_index=True)
 
     # output
     if not output.empty:
         output.to_csv(output_file_path, index=False)
-    if not not_created.empty:
-        not_created.to_csv(not_created_file_path, index=False)
+    if not not_to_create.empty:
+        not_to_create.to_csv(not_to_create_file_path, index=False)
     return
 
 

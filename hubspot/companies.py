@@ -23,7 +23,6 @@ def create_company(parameters):
         print('ok', indx)
     else:
         print('not ok! ', response.status_code)
-
     return
 
 

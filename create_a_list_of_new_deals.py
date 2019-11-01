@@ -3,13 +3,16 @@
 """
 import pandas as pd
 import hubspot
+import datetime
 
 
 def main():
     properties = {
         'dealname': '',
         'dealtype':'newbusiness',
-        'description':'',
+        'general_contractor':'',
+        'amount': '',
+        'work_descrption': '',
         'pipeline': '815585',
         'dealstage':'815586',
         'permit_':'',
@@ -24,45 +27,48 @@ def main():
         'associatedTicketIds': []
     }
 
-    companies_file_path = '/home/alxfed/archive/general_contractors_doing_renovations_and_their_permits.csv'
-    companies_columns = ['general_contractor', 'id']
-    contractors = pd.read_csv(companies_file_path,
-                              usecols=companies_columns,
-                              dtype=object)
+    deals_to_create_file_path = '/home/alxfed/archive/deals_to_create_for_ra_permits.csv'
+    deals_columns = ['companyId', 'general_contractor', 'issue_date', 'permit_', 'permit_type', 'reported_cost',
+                     'street_direction', 'street_name', 'street_number', 'suffix', 'work_description']
 
-    gen_cont_file_path = '/home/alxfed/archive/licensed_general_contractors.csv'
-    licenses_columns = ['license_type',
-                        'company_name', 'address', 'phone']
-    gen_contractors = pd.read_csv(gen_cont_file_path,
-                                  usecols=licenses_columns,
-                                  dtype=object)
+    deals = pd.read_csv(deals_to_create_file_path,
+                        usecols=deals_columns,
+                        parse_dates=['issue_date'],
+                        dtype=object)
 
-    lic_file_path = '/home/alxfed/archive/licensed_contractors_to_create.csv'
+    created_file_path = '/home/alxfed/archive/created_new_ra_deals.csv'
+    not_created_file  = '/home/alxfed/archive/not_created_new_ra_deals.csv'
 
-    seen = set()
-    real_names = set()
-    to_create = []
-    for indx, contractor in contractors.iterrows():
-        company = contractor['general_contractor']
-        if company not in seen:
-            seen.add(company)
-            for ind, co_licensed in gen_contractors.iterrows():
-                co_name = co_licensed['company_name']
-                if co_name.startswith(company):
-                    if co_name not in real_names:
-                        real_names.add(co_name)
-                        to_create.append(dict(co_licensed))
-                        print('New name: ', co_name)
-                        # and other wonderful things that have to be done
-                    break
-                else:
-                    # licenced company doesn't start like the permit company
-                    pass
+    created = pd.DataFrame()
+    not_created = pd.DataFrame()
+    for indx, deal in deals.iterrows():
+        line = pd.Series()
+        prop = properties.copy()
+        asso = associations.copy()
+        asso['associatedCompanyIds'] = [deal['companyId']]
+        deal_name = deal['street_number'] + ' ' + deal['street_direction'] + ' '
+        deal_name = deal_name + deal['street_name'] + ' ' + deal['suffix']
+        deal_name = 'RA ' + deal_name.title()
+        prop['dealname'] = deal_name
+        prop['general_contractor'] = deal['general_contractor'].title()
+        prop['amount'] = .15 * float(deal['reported_cost'])
+        prop['work_descrption'] = deal['work_description']
+        prop['permit_'] = deal['permit_']
+        prop['permit_type'] = deal['permit_type']
+        prop['permit_issue_date'] = deal['issue_date'].strftime('%Y-%m-%d')
+        close_date = int(deal['issue_date'].value / 1000000)
+        prop['closedate'] = close_date
+        crea = hubspot.deals.create_a_deal(prop, asso)
+        line['dealId'] = crea['dealId']
+        line['isDeleted'] = crea['isDeleted']
+        associa = crea['associations']
+        propert = crea['properties']
+        if crea:
+            created = created.append(crea, ignore_index=True)
         else:
-            # company has been seen, do nothing
-            pass
-    output = pd.DataFrame(to_create)
-    output.to_csv(lic_file_path, index=False)
+            not_created = not_created.append(deal, ignore_index=True)
+    created.to_csv(created_file_path, index=False)
+    not_created.to_csv(not_created_file, index=False)
     return
 
 
