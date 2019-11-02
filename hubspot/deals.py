@@ -24,12 +24,11 @@ def create_a_deal(parameters, associations):
         print('not ok! ', response.status_code)
     return res
 
-''' template from the companies module
-def update_deal(companyId, parameters):
-    request_url = f'{constants.COMPANY_UPDATE_URL}{companyId}'
-    response = requests.request('PUT', url=request_url,
+
+def get_a_deal(dealId):
+    request_url = f'{constants.DEAL_URL}/{dealId}'
+    response = requests.request('GET', url=request_url,
                                 headers=constants.header,
-                                json=parameters,
                                 params=constants.parameters)
     if response.status_code == 200:
         resp = response.json()
@@ -37,7 +36,21 @@ def update_deal(companyId, parameters):
     else:
         print(response.status_code)
         return
-'''
+
+
+def update_a_deal(dealId, properties):
+    request_url = f'{constants.DEAL_URL}{dealId}'
+    response = requests.request('PUT', url=request_url,
+                                headers=constants.header,
+                                json=properties,
+                                params=constants.parameters)
+    if response.status_code == 200:
+        resp = response.json()
+        return resp
+    else:
+        print(response.status_code)
+        return
+
 
 def get_all_deals(request_parameters, include_associations):
     """Downloads the complete list of deals from the portal
