@@ -27,7 +27,7 @@ def main():
         'associatedTicketIds': []
     }
 
-    deals_to_create_file_path = '/home/alxfed/archive/deals_to_create_for_ra_permits.csv'
+    deals_to_create_file_path = '/home/alxfed/archive/deals_to_create_for_nc_permits.csv'
     deals_columns = ['companyId', 'general_contractor', 'issue_date', 'permit_', 'permit_type', 'reported_cost',
                      'street_direction', 'street_name', 'street_number', 'suffix', 'work_description']
 
@@ -36,8 +36,8 @@ def main():
                         parse_dates=['issue_date'],
                         dtype=object)
 
-    created_file_path = '/home/alxfed/archive/created_new_ra_deals.csv'
-    not_created_file  = '/home/alxfed/archive/not_created_new_ra_deals.csv'
+    created_file_path = '/home/alxfed/archive/created_new_nc_deals.csv'
+    not_created_file  = '/home/alxfed/archive/not_created_new_nc_deals.csv'
 
     created = pd.DataFrame()
     not_created = pd.DataFrame()
@@ -46,9 +46,9 @@ def main():
         prop = properties.copy()
         asso = associations.copy()
         asso['associatedCompanyIds'] = [deal['companyId']]
-        deal_name = deal['street_number'] + ' ' + deal['street_direction'] + ' '
-        deal_name = deal_name + deal['street_name'] + ' ' + deal['suffix']
-        deal_name = 'RA ' + deal_name.title()
+        deal_name = str(deal['street_number']) + ' ' + str(deal['street_direction']) + ' '
+        deal_name = deal_name + str(deal['street_name']) + ' ' + str(deal['suffix'])
+        deal_name = 'NC ' + deal_name.title()
         prop['dealname'] = deal_name
         prop['general_contractor'] = deal['general_contractor'].title()
         prop['amount'] = .15 * float(deal['reported_cost'])
@@ -59,12 +59,11 @@ def main():
         close_date = int(deal['issue_date'].value / 1000000)
         prop['closedate'] = close_date
         crea = hubspot.deals.create_a_deal(prop, asso)
-        line['dealId'] = crea['dealId']
-        line['isDeleted'] = crea['isDeleted']
-        associa = crea['associations']
-        propert = crea['properties']
         if crea:
-            created = created.append(crea, ignore_index=True)
+            line['dealId'] = str(int(crea['dealId']))
+            line['isDeleted'] = str(bool(crea['isDeleted']))
+            line = line.append(deal)
+            created = created.append(line, ignore_index=True)
         else:
             not_created = not_created.append(deal, ignore_index=True)
     created.to_csv(created_file_path, index=False)

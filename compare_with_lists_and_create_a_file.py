@@ -33,7 +33,7 @@ def compare_with_companies_and_state(row, present, reference):
 
 def main():
     # active General Contractors are on https://webapps1.chicago.gov/activegcWeb/
-    origin_file_path                = '/home/alxfed/archive/general_contractors_doing_renovations_and_their_permits.csv'
+    origin_file_path                = '/home/alxfed/archive/general_contractors_doing_new_construction_and_their_permits.csv'
     permit_useful_columns           = ['general_contractor', 'id', 'permit_', 'permit_type',
                                        'application_start_date', 'issue_date',
                                        'street_number', 'street_direction', 'street_name', 'suffix',
@@ -49,8 +49,8 @@ def main():
                                        'permit_issue_date', 'permit_', 'permit', 'permit_type',
                                        'work_descrption']
     general_contractors_file_path   = '/home/alxfed/archive/licensed_general_contractors.csv'
-    output_file_path                = '/home/alxfed/archive/deals_to_create_for_ra_permits.csv'
-    not_to_create_file_path           = '/home/alxfed/archive/deals_not_to_create_in_ra_permits.csv'
+    output_file_path                = '/home/alxfed/archive/deals_to_create_for_nc_permits.csv'
+    not_to_create_file_path           = '/home/alxfed/archive/deals_not_to_create_in_nc_permits.csv'
 
     input_perm      = pd.read_csv(origin_file_path, dtype=object)
     present_state  = pd.read_csv(present_state_file_path, dtype=object)
@@ -64,7 +64,7 @@ def main():
     for index, this_permit in input_perm.iterrows():
         to_add, not_to_add = compare_with_companies_and_state(this_permit, present_state, companies)
         if to_add.empty:
-            not_to_create = not_to_create.append(not_to_add, ignore_index = False)
+            not_to_create = not_to_create.append(not_to_add, ignore_index = True)
         elif not_to_add.empty:
             output = output.append(to_add, ignore_index=True)
 
