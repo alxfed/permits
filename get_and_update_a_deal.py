@@ -20,9 +20,14 @@ def main():
                      'permit_issue_date', 'permit_', 'permit', 'permit_type', 'work_descrption']
     update_table = pd.read_csv(update_file_path, usecols=update_columns, dtype=object)
 
+    parameters = {}
+
     for index, deal_to_update in update_table.iterrows():
         dealId = deal_to_update['dealId']
         gotten = hubspot.deals.get_a_deal(dealId)
+        parameters['amount'] = 1000
+        parameters['dealname'] = 'New name of the deal'
+        updated = hubspot.deals.update_a_deal(dealId, parameters)
         print('ok')
     return
 

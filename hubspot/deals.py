@@ -38,8 +38,11 @@ def get_a_deal(dealId):
         return
 
 
-def update_a_deal(dealId, properties):
-    request_url = f'{constants.DEAL_URL}{dealId}'
+def update_a_deal(dealId, parameters):
+    request_url = f'{constants.DEAL_URL}/{dealId}'
+    properties = {"properties": []}
+    for key in parameters:
+        properties['properties'].append({'name': key, 'value': parameters[key]})
     response = requests.request('PUT', url=request_url,
                                 headers=constants.header,
                                 json=properties,
